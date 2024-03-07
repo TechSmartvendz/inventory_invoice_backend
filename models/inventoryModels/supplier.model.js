@@ -16,33 +16,35 @@ const SupplierSchema = new Schema(
       type: Number,
       default: 0
     },
-    supplierAddress: {
-      type: String,
-      default: null
+    address: {
+      addressLineOne: {
+        type: String,
+        default: "N/A"
+      },
+      area: {
+        type: String,
+        default: "N/A"
+      },
+      city: {
+        type: String,
+        default: "N/A"
+      },
+      state: {
+        type: String,
+        default: "N/A"
+      },
+      country: {
+        type: String,
+        default: "N/A"
+      },
+      pincode: {
+        type: Number,
+        default: "N/A"
+      },
     },
     contactPerson: {
       type: String,
       default: null
-    },
-    area: {
-      type: String,
-      default: null
-    },
-    state: {
-      type: String,
-      default: null
-    },
-    city: {
-      type: String,
-      default: null
-    },
-    country: {
-      type: String,
-      default: null
-    },
-    pincode: {
-      type: Number,
-      default: 0
     },
     gstNumber: {
       type: Number,
@@ -54,19 +56,24 @@ const SupplierSchema = new Schema(
     },
     warehouse: {
       type: Schema.Types.ObjectId,
-      ref: "warehouse"
+      ref: "warehouses",
+      required: true
     },
-    admin: {
-      type: String,
-      default: null
+    createdBy: {
+      type: Schema.Types.ObjectId,
+      ref: "inventoryusers"
     },
+    // admin: {
+    //   type: String,
+    //   default: null
+    // },
     isDeleted: {
       type: Boolean,
       default: false
     },
   }, { timestamps: true });
 
-const SupplierModel = mongoose.model("supplier", SupplierSchema);
+const SupplierModel = mongoose.model("suppliers", SupplierSchema);
 
 module.exports = { SupplierModel }
 

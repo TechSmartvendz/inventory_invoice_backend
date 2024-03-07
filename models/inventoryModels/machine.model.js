@@ -1,27 +1,14 @@
-const mongoose = require("mongoose");
+const { Schema, model } = require("mongoose");
 
-const MachineSchema = mongoose.Schema({
+const MachineSchema = Schema({
   machineId: {
     type: String,
     require: true,
-    unique: true,
   },
   machineName: {
     type: String,
     require: true,
     unique: true,
-  },
-  companyId: {
-    type: String,
-    require: true,
-  },
-  warehouse: {
-    type: String,
-    require: true,
-  },
-  refiller: {
-    type: String,
-    require: true,
   },
   building: {
     type: String,
@@ -42,6 +29,7 @@ const MachineSchema = mongoose.Schema({
   },
   remark: {
     type: String,
+    default: "N/A"
   },
   cash: {
     type: Number,
@@ -55,22 +43,34 @@ const MachineSchema = mongoose.Schema({
     type: Number,
     default: 0,
   },
-  created_by: {
-    type: String,
-    require: true,
-    default: this.admin,
-  },
   isDeleted: {
     type: Boolean,
     require: true,
     default: false,
   },
-  admin: {
-    type: String,
-    required: true,
+  // admin: {
+  //   type: String,
+  //   required: true,
+  // },
+  warehouse: {
+    type: Schema.Types.ObjectId,
+    ref: "warehouses",
+    default: "N/A"
+  },
+  refiller: {
+    type: Schema.Types.ObjectId,
+    ref: "inventoryusers",
+  },
+  company: {
+    type: Schema.Types.ObjectId,
+    ref: "companies",
+  },
+  createdBy: {
+    type: Schema.Types.ObjectId,
+    ref: "inventoryusers",
   },
 }, { timestamps: true });
 
-const MachineModel = mongoose.model("machines", MachineSchema);
+const MachineModel = model("machines", MachineSchema);
 
 module.exports = { MachineModel }

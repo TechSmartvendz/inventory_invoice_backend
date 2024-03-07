@@ -5,11 +5,13 @@ const WarehouseStockSchema = new Schema(
   {
     warehouse: {
       type: Schema.Types.ObjectId,
-      ref: "warehouse"
+      ref: "warehouses",
+      required: true
     },
     product: {
       type: Schema.Types.ObjectId,
-      ref: "product"
+      ref: "products",
+      required: true
     },
     productQuantity: {
       type: Number,
@@ -19,21 +21,21 @@ const WarehouseStockSchema = new Schema(
       type: Number,
       default: 0
     },
-    admin: {
-      type: String,
-      default: null
-    },
+    // admin: {
+    //   type: String,
+    //   default: null
+    // },
     isDeleted: {
       type: Boolean,
       default: false
     },
-  },
-  {
-    timestamps: true,
-  }
-);
+    updatedBy: {
+      type: Schema.Types.ObjectId,
+      ref: "inventoryusers"
+    }
+  }, { timestamps: true, });
 
-const WarehouseModel = mongoose.model("warehouseStock", WarehouseStockSchema);
+const WarehouseModel = mongoose.model("warehouseStocks", WarehouseStockSchema);
 
 module.exports = { WarehouseModel }
 

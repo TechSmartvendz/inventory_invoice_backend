@@ -1,11 +1,15 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { createError } = require("../utils/createError");
 const { UserModel } = require('../../models/inventoryModels/users.model');
+const { createError } = require('../../utils/createError');
 
 const register = async (req, res, next) => {
-    const { userName, firstName, lastName, mobileNumber, email, address, country, state, city, area, profile_pic, createdBy, role, password, admin } = req.body;
+    const { userName, password, ...otherDetails } = req.body;
     try {
+        const checkUserIsAlreadyExist = await UserModel.findOne({ userName });
+        if (checkUserIsAlreadyExist) {
+            return next(createError(201, "User Already Exist"));
+        }
         bcrypt.hash(password, 5, async (err, hash) => {
             if (err) {
                 next(err)
@@ -13,25 +17,13 @@ const register = async (req, res, next) => {
             else {
                 const newUser = new UserModel({
                     userName,
-                    firstName,
-                    lastName,
-                    mobileNumber,
-                    email,
-                    address,
-                    country,
-                    state,
-                    city,
-                    area,
-                    profile_pic,
-                    createdBy,
-                    role,
-                    admin,
-                    password: hash,
+                    password: hash, // Store hash password in DB.
+                    ...otherDetails,
                 });
                 await newUser.save();
-                res.status(200).send({ userName: firstName, message: "User has been created!" })
+                res.status(200).send({ userName, message: "User has been created!" })
             }
-            // Store hash in your password DB.
+
         });
     }
     catch (err) {
@@ -49,7 +41,7 @@ const login = async (req, res, next) => {
         }
         bcrypt.compare(password, user.password).then((result) => {
             if (result) {
-                const token = jwt.sign({ id: user._id }, "shhhhh");
+                const token = jwt.sign({ id: user._id, role: user.role }, "shhhhh");
                 const { password, ...otherDetails } = user._doc; // user._doc console this you can see the details
                 // console.log('user._doc: ', user._doc);
                 res
@@ -65,7 +57,7 @@ const login = async (req, res, next) => {
                         success: true,
                     });
             } else {
-                next(createError(400, "Wrong password or username!"));
+                next(createError(400, "Wrong Password or Username!"))
             }
         });
     } catch (err) {

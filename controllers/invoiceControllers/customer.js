@@ -1,9 +1,6 @@
-const rc = require("./responseController");
-const utils = require("../helper/apiHelper");
-const { asyncHandler } = require("../middleware/asyncHandler");
-const inv_Customer = require("../model/inv_Customer");
 
-const addCustomer = asyncHandler(async (req, res) => {
+
+const addCustomer = async (req, res) => {
   const pararms = req.body;
   const checkData = await inv_Customer.findOne({
     $or: [
@@ -13,7 +10,7 @@ const addCustomer = asyncHandler(async (req, res) => {
   });
   // console.log('checkData: ', checkData);
   if (checkData) {
-    return rc.setResponse(res, {
+    return res.send({
       msg: `Already created with this customer ${pararms.customerName} or with customer phone - ${pararms.customerPhone}`,
     });
   }
@@ -21,21 +18,21 @@ const addCustomer = asyncHandler(async (req, res) => {
   newCustomer.admin = req.userData._id;
   // newCustomer.admin = "121212";
   if (!newCustomer) {
-    return rc.setResponse(res, {
+    return (res, {
       msg: "No Data to insert",
     });
   }
   const data = await utils.saveData(inv_Customer, newCustomer);
   if (data) {
-    return rc.setResponse(res, {
+    return res.status(200)
+    .send({
       success: true,
-      msg: "Data Inserted",
-      data: data,
+      machines,
     });
   }
-});
+};
 
-const getCustomer = asyncHandler(async (req, res) => {
+const getCustomer = async (req, res) => {
   const filter = { isDeleted: false };
   const projection = {};
   const options = {};
@@ -53,9 +50,9 @@ const getCustomer = asyncHandler(async (req, res) => {
       msg: "Data not Found",
     });
   }
-});
+};
 
-const getCustomerById = asyncHandler(async (req, res) => {
+const getCustomerById = async (req, res) => {
   const filter = { _id: req.query.id, isDeleted: false };
   const projection = {};
   const options = {};
@@ -73,9 +70,9 @@ const getCustomerById = asyncHandler(async (req, res) => {
       msg: "Data not Found",
     });
   }
-});
+};
 
-const updateCustomer = asyncHandler(async (req, res) => {
+const updateCustomer = async (req, res) => {
   const pararms = req.body;
   const data = await utils.updateData(
     inv_Customer,
@@ -93,9 +90,9 @@ const updateCustomer = asyncHandler(async (req, res) => {
       msg: "Some error occured",
     });
   }
-});
+};
 
-const deleteCustomer = asyncHandler(async (req, res) => {
+const deleteCustomer = async (req, res) => {
   let pararms = {
     isDeleted: true,
   };
@@ -110,7 +107,7 @@ const deleteCustomer = asyncHandler(async (req, res) => {
       data: "Data Deleted",
     });
   }
-});
+};
 
 module.exports = {
   addCustomer,

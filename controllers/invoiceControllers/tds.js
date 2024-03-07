@@ -1,10 +1,5 @@
-const rc = require("./responseController");
-const utils = require("../helper/apiHelper");
-const { asyncHandler } = require("../middleware/asyncHandler");
-const inv_TDS = require("../model/inv_TDS");
-const inv_TdsSection = require("../model/inv_tdsTaxSection");
 
-const addTDS = asyncHandler(async (req, res) => {
+const addTDS = async (req, res) => {
   let pararms = req.body;
   const checkData = await inv_TDS.findOne({
     tdsName: pararms.tdsName.trim(),
@@ -23,15 +18,15 @@ const addTDS = asyncHandler(async (req, res) => {
   }
   const data = await utils.saveData(inv_TDS, newTDS);
   if (data) {
-    return rc.setResponse(res, {
+    return res.status(200)
+    .send({
       success: true,
-      msg: "Data Inserted",
-      data: data,
+      machines,
     });
   }
-});
+};
 
-const getTDS = asyncHandler(async (req, res) => {
+const getTDS = async (req, res) => {
   //   const data = await utils.findDocuments()
 
   const filter = { isDeleted: false };
@@ -51,9 +46,9 @@ const getTDS = asyncHandler(async (req, res) => {
       msg: "Data not Found",
     });
   }
-});
+};
 
-const getTDSById = asyncHandler(async (req, res) => {
+const getTDSById = async (req, res) => {
   //   const data = await utils.findDocuments()
 
   const filter = { _id: req.query.id, isDeleted: false };
@@ -73,9 +68,9 @@ const getTDSById = asyncHandler(async (req, res) => {
       msg: "Data not Found",
     });
   }
-});
+};
 
-const updateTDS = asyncHandler(async (req, res) => {
+const updateTDS = async (req, res) => {
   const pararms = req.body;
   const data = await utils.updateData(inv_TDS, { _id: req.query.id }, pararms);
   if (data) {
@@ -89,9 +84,9 @@ const updateTDS = asyncHandler(async (req, res) => {
       msg: "Some error occured",
     });
   }
-});
+};
 
-const deleteTDS = asyncHandler(async (req, res) => {
+const deleteTDS = async (req, res) => {
   let pararms = {
     isDeleted: true,
   };
@@ -102,11 +97,11 @@ const deleteTDS = asyncHandler(async (req, res) => {
       data: "Data Deleted",
     });
   }
-});
+};
 
 // this is TDS section
 
-const addTdsSection = asyncHandler(async (req, res) => {
+const addTdsSection = async (req, res) => {
   let pararms = req.body;
   const checkData = await inv_TdsSection.findOne({
     section: pararms.section.trim(),
@@ -125,15 +120,15 @@ const addTdsSection = asyncHandler(async (req, res) => {
   }
   const data = await utils.saveData(inv_TdsSection, newTdsSection);
   if (data) {
-    return rc.setResponse(res, {
+    return res.status(200)
+    .send({
       success: true,
-      msg: "Data Inserted",
-      data: data,
+      machines,
     });
   }
-});
+};
 
-const getTdsSection = asyncHandler(async (req, res) => {
+const getTdsSection = async (req, res) => {
   const filter = { isDeleted: false };
   const projection = {};
   const options = {};
@@ -154,9 +149,9 @@ const getTdsSection = asyncHandler(async (req, res) => {
       msg: "Data not Found",
     });
   }
-});
+};
 
-const getTdsSectionById = asyncHandler(async (req, res) => {
+const getTdsSectionById = async (req, res) => {
   const filter = { _id: req.query.id, isDeleted: false };
   const projection = {};
   const options = {};
@@ -179,9 +174,9 @@ const getTdsSectionById = asyncHandler(async (req, res) => {
       msg: "Data not Found",
     });
   }
-});
+};
 
-const updateTdsSection = asyncHandler(async (req, res) => {
+const updateTdsSection = async (req, res) => {
   const pararms = req.body;
   const data = await utils.updateData(
     inv_TdsSection,
@@ -199,9 +194,9 @@ const updateTdsSection = asyncHandler(async (req, res) => {
       msg: "Some error occured",
     });
   }
-});
+};
 
-const deleteTdsSection = asyncHandler(async (req, res) => {
+const deleteTdsSection = async (req, res) => {
   let pararms = {
     isDeleted: true,
   };
@@ -216,7 +211,7 @@ const deleteTdsSection = asyncHandler(async (req, res) => {
       data: "Data Deleted",
     });
   }
-});
+};
 
 module.exports = {
   addTDS,

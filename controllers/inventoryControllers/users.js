@@ -36,6 +36,7 @@ const getAllUser = async (req, res, next) => {
 const updateUser = async (req, res, next) => {
     const { id } = req.params;
     const payload = req.body;
+    // console.log('payload: ', payload);
     try {
         const updatedUser = await UserModel.findByIdAndUpdate(id, { $set: payload }, { new: true });
         return res.status(200)
@@ -51,6 +52,8 @@ const updateUser = async (req, res, next) => {
 }
 
 //DELETE
+// Need to check the access of all machines and remove access/change access to another
+// person to access machines
 const deleteUser = async (req, res, next) => {
     const { id } = req.params;
     try {

@@ -1,9 +1,5 @@
-const rc = require("./responseController");
-const utils = require("../helper/apiHelper");
-const { asyncHandler } = require("../middleware/asyncHandler");
-const inv_PaymentTerm = require("../model/inv_PaymentsTerm");
 
-const addPaymentTerm = asyncHandler(async (req, res) => {
+const addPaymentTerm = async (req, res) => {
   let pararms = req.body;
   const checkData = await inv_PaymentTerm.findOne({
     paymentTermName: pararms.paymentTermName.trim(),
@@ -22,15 +18,15 @@ const addPaymentTerm = asyncHandler(async (req, res) => {
   }
   const data = await utils.saveData(inv_PaymentTerm, newPaymentTerm);
   if (data) {
-    return rc.setResponse(res, {
+    return res.status(200)
+    .send({
       success: true,
-      msg: "Data Inserted",
-      data: data,
+      machines,
     });
   }
-});
+};
 
-const getPaymentTerm = asyncHandler(async (req, res) => {
+const getPaymentTerm = async (req, res) => {
   //   const data = await utils.findDocuments()
 
   const filter = { isDeleted: false };
@@ -55,9 +51,9 @@ const getPaymentTerm = asyncHandler(async (req, res) => {
       msg: "Data not Found",
     });
   }
-});
+};
 
-const getPaymentTermById = asyncHandler(async (req, res) => {
+const getPaymentTermById = async (req, res) => {
   //   const data = await utils.findDocuments()
 
   const filter = { _id: req.query.id, isDeleted: false };
@@ -82,9 +78,9 @@ const getPaymentTermById = asyncHandler(async (req, res) => {
       msg: "Data not Found",
     });
   }
-});
+};
 
-const updatePaymentTerm = asyncHandler(async (req, res) => {
+const updatePaymentTerm = async (req, res) => {
   const pararms = req.body;
   const data = await utils.updateData(
     inv_PaymentTerm,
@@ -102,9 +98,9 @@ const updatePaymentTerm = asyncHandler(async (req, res) => {
       msg: "Some error occured",
     });
   }
-});
+};
 
-const deletePaymentTerm = asyncHandler(async (req, res) => {
+const deletePaymentTerm = async (req, res) => {
   let pararms = {
     isDeleted: true,
   };
@@ -119,7 +115,7 @@ const deletePaymentTerm = asyncHandler(async (req, res) => {
       data: "Data Deleted",
     });
   }
-});
+};
 
 module.exports = {
   addPaymentTerm,

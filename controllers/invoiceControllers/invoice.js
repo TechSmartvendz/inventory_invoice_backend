@@ -1,10 +1,6 @@
-const rc = require("./responseController");
-const utils = require("../helper/apiHelper");
-const { asyncHandler } = require("../middleware/asyncHandler");
-const inv_Invoice = require("../model/inv_Invoice");
-const inv_Payment = require("../model/inv_Payment");
 
-const addInvoice = asyncHandler(async (req, res) => {
+
+const addInvoice = async (req, res) => {
   const pararms = req.body;
   const checkData = await inv_Invoice.findOne({
     invoiceNumber: pararms.invoiceNumber,
@@ -54,9 +50,9 @@ const addInvoice = asyncHandler(async (req, res) => {
       msg: "Failed to create invoice",
     });
   }
-});
+};
 
-const getInvoice = asyncHandler(async (req, res) => {
+const getInvoice = async (req, res) => {
   const filter = { isDeleted: false };
   const projection = {};
   const options = {};
@@ -74,9 +70,9 @@ const getInvoice = asyncHandler(async (req, res) => {
       msg: "Data not Found",
     });
   }
-});
+};
 
-const getInvoiceById = asyncHandler(async (req, res) => {
+const getInvoiceById = async (req, res) => {
   const filter = { _id: req.query.id, isDeleted: false };
   const projection = {};
   const options = {};
@@ -94,9 +90,9 @@ const getInvoiceById = asyncHandler(async (req, res) => {
       msg: "Data not Found",
     });
   }
-});
+};
 
-const updateInvoice = asyncHandler(async (req, res) => {
+const updateInvoice = async (req, res) => {
   const pararms = req.body;
   const data = await utils.updateData(
     inv_Invoice,
@@ -114,9 +110,9 @@ const updateInvoice = asyncHandler(async (req, res) => {
       msg: "Some error occured",
     });
   }
-});
+};
 
-const deleteInvoice = asyncHandler(async (req, res) => {
+const deleteInvoice = async (req, res) => {
   let pararms = {
     isDeleted: true,
   };
@@ -131,9 +127,9 @@ const deleteInvoice = asyncHandler(async (req, res) => {
       data: "Data Deleted",
     });
   }
-});
+};
 
-const nextInvoiceNumber = asyncHandler(async (req, res) => {
+const nextInvoiceNumber = async (req, res) => {
   // console.log(req.query);
   const filter = { branch: req.query.branch };
   const data = await inv_Invoice
@@ -158,11 +154,11 @@ const nextInvoiceNumber = asyncHandler(async (req, res) => {
   // console.log('nextData: ', nextData);
   return rc.setResponse(res, {
     success: true,
-    data: {invoiceNumber:invoiceNumber},
+    data: { invoiceNumber: invoiceNumber },
   });
-});
+};
 
-const getInvoicePayment = asyncHandler(async (req, res) => {
+const getInvoicePayment = async (req, res) => {
   const pararms = req.body;
   if (!pararms.customerId && !pararms.paymentId) {
     return rc.setResponse(res, {
@@ -197,16 +193,16 @@ const getInvoicePayment = asyncHandler(async (req, res) => {
       data: error,
     });
   }
-});
+};
 
-const updateInvoicePayment = asyncHandler(async (req, res) => {
+const updateInvoicePayment = async (req, res) => {
   const pararms = req.body;
   const invPayment = await utils.updateData(
     inv_Payment,
     { _id: req.query.id },
     pararms
-    );
-    // console.log('invPayment: ', invPayment);
+  );
+  // console.log('invPayment: ', invPayment);
   if (data) {
     return rc.setResponse(res, {
       success: true,
@@ -218,7 +214,7 @@ const updateInvoicePayment = asyncHandler(async (req, res) => {
       msg: "Some error occured",
     });
   }
-});
+};
 
 function generateInvoiceNumber(uniqueIdentifier) {
   const currentDate = new Date();

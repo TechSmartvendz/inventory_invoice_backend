@@ -1,6 +1,7 @@
 
-const express = require('express');
-const { addProduct, getAllProducts, getSingleProduct, updateProduct, deleteProduct, getSampleCSV, bulkUpdateProduct, bulkUploadProduct } = require("../../controllers/inventoryControllers/product");
+const { Router } = require('express');
+const { addProduct, getAllProducts,getAllProductsListWarehouseWise, getSingleProduct, updateProduct, deleteProduct, getSampleCSV, bulkUpdateProduct, bulkUploadProduct, getAllProductsByWarehouseId } = require("../../controllers/inventoryControllers/product");
+const { verifyAdmin } = require('../../middlewares/inventoryMiddleware/checkUserRole');
 
 //updatebulkproduct
 //singleproductadd
@@ -8,12 +9,18 @@ const { addProduct, getAllProducts, getSingleProduct, updateProduct, deleteProdu
 //productlist
 //products
 
-const productRouter = express.Router();
+const productRouter = Router();
 // ADD PRODUCT
-productRouter.post("/add", addProduct)
+productRouter.post("/add",verifyAdmin, addProduct)
 
 // GET ALL PRODUCTS
 productRouter.get("/getall", getAllProducts)
+
+// GET ALL PRODUCTS BY WAREHOUSE WISE LIST
+productRouter.get("/getall/warehouse", getAllProductsListWarehouseWise)
+
+// GET ALL PRODUCTS BY WAREHOUSE ID
+productRouter.get("/getall/warehouse/:id", getAllProductsByWarehouseId)
 
 // GET SINGLE PRODUCT BY _id
 productRouter.get("/single/:id", getSingleProduct)

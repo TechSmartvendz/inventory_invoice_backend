@@ -1,7 +1,6 @@
-const mongoose = require("mongoose");
-const jwt = require("jsonwebtoken");
+const { Schema, model } = require("mongoose");
 
-const UserSchema = new mongoose.Schema({
+const UserSchema = new Schema({
   userName: {
     type: String,
     required: true,
@@ -20,31 +19,46 @@ const UserSchema = new mongoose.Schema({
   },
   mobileNumber: {
     type: Number,
+    default: "N/A"
   },
   email: {
     type: String,
+    default: "N/A"
   },
   address: {
-    type: String,
-  },
-  country: {
-    type: String,
-  },
-  state: {
-    type: String,
-  },
-  city: {
-    type: String,
-  },
-  area: {
-    type: String,
+    addressLineOne: {
+      type: String,
+      default: "N/A"
+    },
+    area: {
+      type: String,
+      default: "N/A"
+    },
+    city: {
+      type: String,
+      default: "N/A"
+    },
+    state: {
+      type: String,
+      default: "N/A"
+    },
+    country: {
+      type: String,
+      default: "N/A"
+    },
+    pincode: {
+      type: Number,
+      default: "N/A"
+    },
   },
   profile_pic: {
     type: String,
     // default: 'defaultProfileImg.jpg'
+    default: "N/A"
   },
   createdBy: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: "inventoryusers"
   },
   isDeleted: {
     type: Boolean,
@@ -59,13 +73,17 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  admin: {
-    type: String,
-    required: true,
+  // admin: {
+  //   type: String,
+  //   required: true,
+  // },
+  warehouse: {
+    type: Schema.Types.ObjectId,
+    ref: "warehouses",
+    default:"N/A"
   },
-}, { timestamps: true }
-);
+}, { timestamps: true });
 
-const UserModel = mongoose.model("inventoryusers", UserSchema)
+const UserModel = model("inventoryusers", UserSchema)
 
 module.exports = { UserModel }

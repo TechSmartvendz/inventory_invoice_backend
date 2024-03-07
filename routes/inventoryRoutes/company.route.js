@@ -12,12 +12,12 @@ companyRouter.post('/create', addCompany);
 companyRouter.get('/getall', getAllCompanys);
 
 // GET SINGLE COMPANY 
-companyRouter.get('single/:id', getSingleCompany);
+companyRouter.get('/single/:id', getSingleCompany);
 
 // UPDATE COMPANY 
-companyRouter.put('update/:id', updateCompany);
+companyRouter.put('/update/:id', updateCompany);
 
 // DELETE COMPANY 
-companyRouter.delete('delete/:id', deleteCompany);
+companyRouter.delete('/delete/:id', deleteCompany);
 
 module.exports = { companyRouter };

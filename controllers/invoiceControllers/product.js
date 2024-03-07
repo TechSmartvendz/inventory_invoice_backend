@@ -1,13 +1,8 @@
-const rc = require("./responseController");
-const utils = require("../helper/apiHelper");
-const { asyncHandler } = require("../middleware/asyncHandler");
-const invProduct = require("../model/inv_Product");
-const invTax = require("../model/inv_Tax");
-const helper = require("../helper/uploadCSV");
+const { InvoiceProductModel } = require("../../models/invoiceModels/product.model");
 
-const createProduct = asyncHandler(async (req, res) => {
+const createProduct = async (req, res) => {
   const pararms = req.body;
-  const checkData = await invProduct.findOne({ productName: req.body.productName.trim() });
+  const checkData = await InvoiceProductModel.findOne({ productName: req.body.productName.trim() });
   if (checkData) {
     return res.send("Already created");
   }
@@ -21,97 +16,77 @@ const createProduct = asyncHandler(async (req, res) => {
   }
   const data = await utils.saveData(invProduct, obj);
   if (data) {
-    return rc.setResponse(res, {
-      success: true,
-      msg: "Data Inserted",
-      data: data,
-    });
+    return res.status(200)
+      .send({
+        success: true,
+        machines,
+      });
   }
-});
+};
 
-const getProduct = asyncHandler(async (req, res) => {
-  const pararms = req.body;
- 
+const getAllProducts = async (req, res) => {
+  try {
 
-  const filter = { isDeleted: false };
-  const projection = {};
-  const options = {};
+  } catch (error) {
 
-  const data = await utils.getData(
-    invProduct,
-    filter,
-    projection,
-    options
-  );
-  if (data)
-    return rc.setResponse(res, {
-      success: true,
-      data: data,
-    });
-});
-
-const getProductById = asyncHandler(async (req, res) => {
-  const filter = { _id: req.query.id, isDeleted: false };
-  const projection = {};
-  const options = {};
-
-  const data = await utils.getData(invProduct, filter, projection, options);
-
-  if (data) {
-    return rc.setResponse(res, {
-      success: true,
-      msg: "Data Fetched",
-      data: data,
-    });
-  } else {
-    return rc.setResponse(res, {
-      msg: "Data not Found",
-    });
   }
-});
+};
 
-const updateProduct = asyncHandler(async (req, res) => {
-  const pararms = req.body;
-  // console.log("pararms: ", pararms);
-  let obj = {
-    productId: pararms.productId,
-    productType: pararms.productType,
-    productName: pararms.productName,
-    unit: pararms.unit,
-    sellingPrice: pararms.sellingPrice,
-    sellingAccount: pararms.sellingAccount,
-    salesDescription: pararms.salesDescription,
-    costPrice: pararms.costPrice,
-    account: pararms.account,
-    purchaseDescription: pararms.purchaseDescription,
-    preferredVendor: pararms.preferredVendor,
-    tax: pararms.tax,
-    updatedBy: req.userData._id,
-  };
-  const data = await utils.updateData(invProduct, { _id: req.query.id }, obj);
-  // console.log("data: ", data);
-  if (data) {
-    return rc.setResponse(res, {
-      success: true,
-      data: "data updated",
-    });
+const getProductById = async (req, res) => {
+  try {
+    const filter = { _id: req.query.id, isDeleted: false };
+    const projection = {};
+    const options = {};
+    const data = await InvoiceProductModel.find(invProduct, filter, projection, options);
+
+    if (data) {
+      return rc.setResponse(res, {
+        success: true,
+        msg: "Data Fetched",
+        data: data,
+      });
+    } else {
+      return rc.setResponse(res, {
+        msg: "Data not Found",
+      });
+    }
+  } catch (error) {
+
   }
-});
+};
 
-const deleteProduct = asyncHandler(async (req, res) => {
-  let obj = {
-    isDeleted: true,
-  };
-  const data = await utils.updateData(invProduct, { _id: req.query.id }, obj);
-  if (data) {
-    return rc.setResponse(res, {
-      success: true,
-      data: "Data Deleted",
-    });
+const updateProduct = async (req, res) => {
+  try {
+    const { id } = req.bodymparams;
+
+    const data = await InvoiceProductModel.findByIdAndUpdate();
+    // console.log("data: ", data);
+    return res.status(200)
+      .send({
+        success: true,
+        data,
+      });
+  } catch (error) {
+
   }
-});
 
-const bulkupload = asyncHandler(async (req, res) => {
+};
+
+const deleteProduct = async (req, res) => {
+  try {
+    const { id } = req.pararms
+  } catch (error) {
+
+  }
+  const data = await InvoiceProductModel.findByIdAndUpdate(id, { isDeleted: true }, { new: true });
+    return res.status(200)
+      .send({
+        success: true,
+        data,
+      });
+};
+
+const bulkupload = async (req, res) => {
   // console.log(req.userData);
   const validateRow = (data) => {
     if (
@@ -246,9 +221,9 @@ const bulkupload = asyncHandler(async (req, res) => {
     console.error(error);
     return res.json({ error: { code: 500 } });
   }
-});
+};
 
-const exportProduct = asyncHandler(async (req, res) => {
+const exportProduct = async (req, res) => {
   const schema = {
     productId: "",
     productType: "",
@@ -266,11 +241,11 @@ const exportProduct = asyncHandler(async (req, res) => {
   };
   const fields = Object.keys(schema);
   helper.downloadSampleCSV(res, schema, fields);
-});
+};
 
 module.exports = {
   createProduct,
-  getProduct,
+  getAllProducts,
   getProductById,
   updateProduct,
   deleteProduct,
