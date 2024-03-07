@@ -1,20 +1,20 @@
-const mongoose = require("mongoose");
+const { Schema, model } = require("mongoose");
 
-const TransferReqWHtoWHSchema = new mongoose.Schema(
+const TransferReqWHtoWHSchema = new Schema(
   {
     fromWarehouse: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "warehouse",
+      type: Schema.Types.ObjectId,
+      ref: "warehouses",
     },
     toWarehouse: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "warehouse",
+      type: Schema.Types.ObjectId,
+      ref: "warehouses",
     },
-    transferRequests: [
+    transferProducts: [
       {
         productName: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "product"
+          type: Schema.Types.ObjectId,
+          ref: "products"
         },
         productQuantity: {
           type: Number,
@@ -25,8 +25,8 @@ const TransferReqWHtoWHSchema = new mongoose.Schema(
     ],
     status: {
       type: String,
-      default: "Pending",
-      enum: ["Pending", "Accepted", "Rejected"],
+      default: "pending",
+      enum: ["pending", "accepted", "rejected"],
     },
     isDeleted: {
       type: Boolean,
@@ -35,6 +35,6 @@ const TransferReqWHtoWHSchema = new mongoose.Schema(
   }, { timestamps: true, });
 
 const TransferReqWHtoWHModel =
-  mongoose.model("TransferRequestWHtoWHs", TransferReqWHtoWHSchema);
+  model("TransferRequestWHtoWHs", TransferReqWHtoWHSchema);
 
 module.exports = { TransferReqWHtoWHModel };

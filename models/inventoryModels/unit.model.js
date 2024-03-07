@@ -1,30 +1,26 @@
-const mongoose = require("mongoose");
+const { Schema, model } = require("mongoose");
 
-const UnitSchema = mongoose.Schema({
+const UnitSchema = Schema({
   unit: {
     type: String,
     require: true,
     unique: true
   },
-  created_by: {
+  createdBy: {
     type: String,
   },
-  last_update: {
-    type: Date,
-  },
-  admin: {
-    type: String,
-    required: true,
-    default: "null",
-  },
-  delete_status: {
+  // admin: {
+  //   type: String,
+  //   required: true,
+  //   default: "null",
+  // },
+  isDeleted: {
     type: Boolean,
-    require: true,
     default: false
   }
 }, { timestamps: true });
 
-const UnitModel = mongoose.model("unit", UnitSchema);
+const UnitModel = model("units", UnitSchema);
 
 module.exports = { UnitModel }
 

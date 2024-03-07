@@ -3,7 +3,6 @@ const { MachineModel } = require("../../models/inventoryModels/machine.model");
 // CREATE MACHINE
 const createMachine = async (req, res, next) => {
   try {
-
     var cdata = await TableModelPermission.getDataByQueryFilterDataOne(query);
     if (cdata.addnewmachine) {
       // console.log(req.body);
@@ -15,20 +14,22 @@ const createMachine = async (req, res, next) => {
       newRow.warehouse = warehousedata._id;
       // newRow.country=cdata.id
       if (!newRow) {
-        return rc.setResponse(res, {
-          msg: "No Data to insert",
-        });
+        return res.status(200)
+          .send({
+            success: true,
+            machines,
+          });
       }
       const data = await TableModel.addRow(newRow);
       if (data) {
-        return rc.setResponse(res, {
-          success: true,
-          msg: "Data Inserted",
-          data: data,
-        });
+        return res.status(200)
+          .send({
+            success: true,
+            machines,
+          });
       }
     } else {
-      return rc.setResponse(res, { error: { code: 403 } });
+      return (res, { error: { code: 403 } });
     }
   } catch (error) {
 
@@ -72,18 +73,20 @@ const getSingleMachine = async (req, res, next) => {
       );
       // console.log("data",data)
       if (data) {
-        return rc.setResponse(res, {
-          success: true,
-          msg: "Data Fetched",
-          data: data[0],
-        });
+        return res.status(200)
+          .send({
+            success: true,
+            machines,
+          });
       } else {
-        return rc.setResponse(res, {
-          msg: "Data not Found",
-        });
+        return res.status(200)
+          .send({
+            success: true,
+            machines,
+          });
       }
     } else {
-      return rc.setResponse(res, { error: { code: 403 } });
+      return (res, { error: { code: 403 } });
     }
   } catch (error) {
 
@@ -106,15 +109,17 @@ const updateMachine = async (req, res, next) => {
       const query = { machineid: req.params.id };
       const data = await TableModel.updateByQuery(query, newData);
       if (data) {
-        return rc.setResponse(res, {
-          success: true,
-          msg: "Data Fetched",
-          data: data,
-        });
+        return res.status(200)
+          .send({
+            success: true,
+            machines,
+          });
       } else {
-        return rc.setResponse(res, {
-          msg: "Data not Found",
-        });
+        return res.status(200)
+          .send({
+            success: true,
+            machines,
+          });
       }
     } else {
       return rc.setResponse(res, { error: { code: 403 } });
@@ -144,24 +149,21 @@ const deleteMachine = async (req, res, next) => {
       const updatequery = { $set: { delete_status: true } };
       const slotData = await TableModelMachineSlot.updateMany(newquery, updatequery);
       if (data) {
-        return rc.setResponse(res, {
-          success: true,
-          msg: "Deleted Successfully",
-          data: data,
-        });
+        return res.status(200)
+          .send({
+            success: true,
+            data,
+          });
       } else {
-        return rc.setResponse(res, {
-          msg: "Data not Found",
-        });
+        return res.status(200)
+          .send({
+            success: true,
+            data,
+          });
       }
 
-      // }else{
-      //     return rc.setResponse(res, {
-      //         msg: "Can't Delete this Role it is using by some Users"
-      //     })
-      // }
     } else {
-      return rc.setResponse(res, { error: { code: 403 } });
+      return (res, { error: { code: 403 } });
     }
   } catch (error) {
 
@@ -208,7 +210,7 @@ const getSampleCSV = async (req, res, next) => {
       );
       res.status(200).end(csvdata);
     } else {
-      return rc.setResponse(res, { error: { code: 403 } });
+      return (res, { error: { code: 403 } });
     }
   } catch (error) {
 
@@ -407,25 +409,26 @@ const bulkUploadMachine = async (req, res, next) => {
           // console.log("rejectmachines", rejectmachines.length);
 
           if (rejectdata.length > 0) {
-            return rc.setResponse(res, {
-              success: true,
-              msg: "Data Fetched",
-              data: {
-                dataupload: "partial upload",
-                reject_data: rejectdata,
-                stored_data: storeddata.length,
-              },
-            });
+            return res.status(200)
+              .send({
+                success: true,
+                data: {
+                  dataupload: "partial upload",
+                  reject_data: rejectdata,
+                  stored_data: storeddata.length,
+                },
+              });
           } else {
-            return rc.setResponse(res, {
-              success: true,
-              msg: "Data Fetched",
-              data: { dataupload: "success", stored_data: storeddata.length },
-            });
+            return res.status(200)
+              .send({
+                success: true,
+                dataupload: "success",
+                stored_data: storeddata.length
+              });
           }
         });
     } else {
-      return rc.setResponse(res, { error: { code: 403 } });
+      return (res, { error: { code: 403 } });
     }
   } catch (error) {
 

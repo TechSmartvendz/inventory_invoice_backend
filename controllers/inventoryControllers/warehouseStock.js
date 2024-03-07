@@ -1,186 +1,181 @@
 const CsvParser = require("json2csv").Parser;
 const csv = require("csv-parser");
 const fs = require("fs");
+const router = require('express');
 // add warehouse stock
-router.post(
-    "/addWarehouseStock",
-    auth,
-    asyncHandler(async (req, res) => {
-        const query = {
-            role: req.user.role,
-        };
-        var pdata = await TableModelPermission.getDataByQueryFilterDataOne(query);
-        if (pdata.addStockl) {
-            newRow = new warehouseStock(req.body);
-            newRow.admin = req.user._id;
-            if (!newRow) {
-                return rc.setResponse(res, {
-                    msg: "No Data to insert",
-                });
-            }
-            const data = await warehouseStock.addRow(newRow);
-            if (data) {
-                return rc.setResponse(res, {
-                    success: true,
-                    msg: "Data Inserted",
-                    data: data,
-                });
-            }
-        } else {
-            return rc.setResponse(res, { error: { code: 403 } });
-        }
-    })
-);
+// router.post(
+//     "/addWarehouseStock",
+//     asyncHandler(async (req, res) => {
+//         const query = {
+//             role: req.user.role,
+//         };
+//         var pdata = await TableModelPermission.getDataByQueryFilterDataOne(query);
+//         if (pdata.addStockl) {
+//             newRow = new warehouseStock(req.body);
+//             newRow.admin = req.user._id;
+//             if (!newRow) {
+//                 return rc.setResponse(res, {
+//                     msg: "No Data to insert",
+//                 });
+//             }
+//             const data = await warehouseStock.addRow(newRow);
+//             if (data) {
+//                 return rc.setResponse(res, {
+//                     success: true,
+//                     msg: "Data Inserted",
+//                     data: data,
+//                 });
+//             }
+//         } else {
+//             return rc.setResponse(res, { error: { code: 403 } });
+//         }
+//     })
+// );
 
 const addWareHouseStock = async (req, res, next) => {
 
 }
 // get all warehouseStock
-router.get(
-    "/getAllWarehouseStocks",
-    auth,
-    asyncHandler(async (req, res, next) => {
-        const query = {
-            role: req.user.role,
-        };
-        var cdata = await TableModelPermission.getDataByQueryFilterDataOne(query);
-        if (cdata.listStock) {
-            const data = await warehouseStock
-                .find({ isDeleted: false })
-                .select("warehouse product productQuantity sellingPrice ")
-                .populate("warehouse")
-                .populate("product");
-            // console.log(data);
-            let sendData = [];
-            if (data) {
-                for (let i = 0; i < data.length; i++) {
-                    sendData.push({
-                        _id: data[i]._id,
-                        product: data[i].product.productname,
-                        warehouse: data[i].warehouse.wareHouseName,
-                        productQuantity: data[i].productQuantity,
-                        sellingPrice: data[i].product.sellingprice,
-                    });
-                }
-                return rc.setResponse(res, {
-                    success: true,
-                    msg: "Data Fetched",
-                    data: sendData,
-                });
-            } else {
-                return rc.setResponse(res, {
-                    msg: "Data not Found",
-                });
-            }
-        } else {
-            return rc.setResponse(res, { error: { code: 403 } });
-        }
-    })
-);
+// router.get(
+//     "/getAllWarehouseStocks",
+//     asyncHandler(async (req, res, next) => {
+//         const query = {
+//             role: req.user.role,
+//         };
+//         var cdata = await TableModelPermission.getDataByQueryFilterDataOne(query);
+//         if (cdata.listStock) {
+//             const data = await warehouseStock
+//                 .find({ isDeleted: false })
+//                 .select("warehouse product productQuantity sellingPrice ")
+//                 .populate("warehouse")
+//                 .populate("product");
+//             // console.log(data);
+//             let sendData = [];
+//             if (data) {
+//                 for (let i = 0; i < data.length; i++) {
+//                     sendData.push({
+//                         _id: data[i]._id,
+//                         product: data[i].product.productname,
+//                         warehouse: data[i].warehouse.wareHouseName,
+//                         productQuantity: data[i].productQuantity,
+//                         sellingPrice: data[i].product.sellingprice,
+//                     });
+//                 }
+//                 return rc.setResponse(res, {
+//                     success: true,
+//                     msg: "Data Fetched",
+//                     data: sendData,
+//                 });
+//             } else {
+//                 return rc.setResponse(res, {
+//                     msg: "Data not Found",
+//                 });
+//             }
+//         } else {
+//             return rc.setResponse(res, { error: { code: 403 } });
+//         }
+//     })
+// );
 
 // get warehouseStocks by id
-router.get(
-    "/getWarehouseStock/:_id",
-    auth,
-    asyncHandler(async (req, res, next) => {
-        const query = {
-            role: req.user.role,
-        };
-        var cdata = await TableModelPermission.getDataByQueryFilterDataOne(query);
-        if (cdata.listStock) {
-            const data = await warehouseStock
-                .find({ warehouse: req.params._id, isDeleted: false })
-                .select("warehouse product productQuantity sellingPrice ")
-                .populate("warehouse")
-                .populate("product");
-            // console.log(data);
-            let sendData = [];
-            if (data) {
-                for (let i = 0; i < data.length; i++) {
-                    sendData.push({
-                        _id: data[i]._id,
-                        product: data[i].product.productname,
-                        warehouse: data[i].warehouse.wareHouseName,
-                        productQuantity: data[i].productQuantity,
-                        sellingPrice: data[i].sellingPrice,
-                    });
-                }
-                return rc.setResponse(res, {
-                    success: true,
-                    msg: "Data Fetched",
-                    data: sendData,
-                });
-            } else {
-                return rc.setResponse(res, {
-                    msg: "Data not Found",
-                });
-            }
-        } else {
-            return rc.setResponse(res, { error: { code: 403 } });
-        }
-    })
-);
+// router.get(
+//     "/getWarehouseStock/:_id",
+//     asyncHandler(async (req, res, next) => {
+//         const query = {
+//             role: req.user.role,
+//         };
+//         var cdata = await TableModelPermission.getDataByQueryFilterDataOne(query);
+//         if (cdata.listStock) {
+//             const data = await warehouseStock
+//                 .find({ warehouse: req.params._id, isDeleted: false })
+//                 .select("warehouse product productQuantity sellingPrice ")
+//                 .populate("warehouse")
+//                 .populate("product");
+//             // console.log(data);
+//             let sendData = [];
+//             if (data) {
+//                 for (let i = 0; i < data.length; i++) {
+//                     sendData.push({
+//                         _id: data[i]._id,
+//                         product: data[i].product.productname,
+//                         warehouse: data[i].warehouse.wareHouseName,
+//                         productQuantity: data[i].productQuantity,
+//                         sellingPrice: data[i].sellingPrice,
+//                     });
+//                 }
+//                 return rc.setResponse(res, {
+//                     success: true,
+//                     msg: "Data Fetched",
+//                     data: sendData,
+//                 });
+//             } else {
+//                 return rc.setResponse(res, {
+//                     msg: "Data not Found",
+//                 });
+//             }
+//         } else {
+//             return rc.setResponse(res, { error: { code: 403 } });
+//         }
+//     })
+// );
 
 // Update warehouseStock
-router.put(
-    "/updateWareHouseStock/:_id",
-    auth,
-    asyncHandler(async (req, res) => {
-        const query = {
-            role: req.user.role,
-        };
-        let cdata = await TableModelPermission.getDataByQueryFilterDataOne(query);
-        if (!cdata) {
-            return rc.setResponse(res, {
-                success: false,
-                msg: "no permission to update warehouse",
-            });
-        } else {
-            const rid = req.params._id;
-            const pararms = req.body;
-            const updatedata = await warehouseStock.findByIdAndUpdate(rid, pararms);
-            return rc.setResponse(res, {
-                success: true,
-                msg: "data updated",
-                data: updatedata,
-            });
-        }
-    })
-);
+// router.put(
+//     "/updateWareHouseStock/:_id",
+//     asyncHandler(async (req, res) => {
+//         const query = {
+//             role: req.user.role,
+//         };
+//         let cdata = await TableModelPermission.getDataByQueryFilterDataOne(query);
+//         if (!cdata) {
+//             return rc.setResponse(res, {
+//                 success: false,
+//                 msg: "no permission to update warehouse",
+//             });
+//         } else {
+//             const rid = req.params._id;
+//             const pararms = req.body;
+//             const updatedata = await warehouseStock.findByIdAndUpdate(rid, pararms);
+//             return rc.setResponse(res, {
+//                 success: true,
+//                 msg: "data updated",
+//                 data: updatedata,
+//             });
+//         }
+//     })
+// );
 
 // deleteWarehouse Stock
-router.put(
-    "/deleteWareHouseStock/:_id",
-    auth,
-    asyncHandler(async (req, res) => {
-        const query = {
-            role: req.user.role,
-        };
-        let cdata = await TableModelPermission.getDataByQueryFilterDataOne(query);
-        if (!cdata) {
-            return rc.setResponse(res, {
-                success: false,
-                msg: "no permission to delete warehouse",
-            });
-        } else {
-            const rid = req.params._id;
-            // const pararms = req.body;
-            const updatedata = await warehouseStock.findByIdAndUpdate(rid, {
-                isDeleted: true,
-            });
-            return rc.setResponse(res, {
-                success: true,
-                msg: "WarehouseStock deleted",
-            });
-        }
-    })
-);
+// router.put(
+//     "/deleteWareHouseStock/:_id",
+//     asyncHandler(async (req, res) => {
+//         const query = {
+//             role: req.user.role,
+//         };
+//         let cdata = await TableModelPermission.getDataByQueryFilterDataOne(query);
+//         if (!cdata) {
+//             return rc.setResponse(res, {
+//                 success: false,
+//                 msg: "no permission to delete warehouse",
+//             });
+//         } else {
+//             const rid = req.params._id;
+//             // const pararms = req.body;
+//             const updatedata = await warehouseStock.findByIdAndUpdate(rid, {
+//                 isDeleted: true,
+//             });
+//             return rc.setResponse(res, {
+//                 success: true,
+//                 msg: "WarehouseStock deleted",
+//             });
+//         }
+//     })
+// );
 
 //------------------------------ purchase request now not using this------------------------------//
 // router.post(
 //   "/purchaseStock",
-//   auth,
-//   asyncHandler(async (req, res) => {
+//   //   asyncHandler(async (req, res) => {
 //     const query = {
 //       role: req.user.role,
 //     };
@@ -315,141 +310,140 @@ router.put(
 
 // --------------------//
 //--------------------------- new purchase request------------------//
-router.post(
-    "/purchaseStock",
-    validator.body(purchaseStockValidate),
-    auth,
-    asyncHandler(async (req, res) => {
-        const query = {
-            role: req.user.role,
-        };
+// router.post(
+//     "/purchaseStock",
+//     validator.body(purchaseStockValidate),
+//     asyncHandler(async (req, res) => {
+//         const query = {
+//             role: req.user.role,
+//         };
 
-        const permissions = await TableModelPermission.getDataByQueryFilterDataOne(
-            query
-        );
+//         const permissions = await TableModelPermission.getDataByQueryFilterDataOne(
+//             query
+//         );
 
-        if (permissions.purchaseStock) {
-            try {
-                const warehouseidcheck = await warehouseTable.findOne({
-                    wareHouseName: req.body.warehouse,
-                });
+//         if (permissions.purchaseStock) {
+//             try {
+//                 const warehouseidcheck = await warehouseTable.findOne({
+//                     wareHouseName: req.body.warehouse,
+//                 });
 
-                if (!warehouseidcheck) {
-                    return rc.setResponse(res, {
-                        success: false,
-                        msg: "Warehouse not found with the provided name.",
-                    });
-                }
+//                 if (!warehouseidcheck) {
+//                     return rc.setResponse(res, {
+//                         success: false,
+//                         msg: "Warehouse not found with the provided name.",
+//                     });
+//                 }
 
-                const supplierid = await supplierTable.findOne({
-                    supplierName: req.body.supplier,
-                });
+//                 const supplierid = await supplierTable.findOne({
+//                     supplierName: req.body.supplier,
+//                 });
 
-                if (!supplierid) {
-                    return rc.setResponse(res, {
-                        success: false,
-                        msg: "Supplier not found with the provided name.",
-                    });
-                }
+//                 if (!supplierid) {
+//                     return rc.setResponse(res, {
+//                         success: false,
+//                         msg: "Supplier not found with the provided name.",
+//                     });
+//                 }
 
-                const invoiceNumberCheck = await purchaseStock.findOne({
-                    invoiceNumber: req.body.invoiceNumber,
-                });
-                // console.log('invoiceNumberCheck: ', invoiceNumberCheck);
+//                 const invoiceNumberCheck = await purchaseStock.findOne({
+//                     invoiceNumber: req.body.invoiceNumber,
+//                 });
+//                 // console.log('invoiceNumberCheck: ', invoiceNumberCheck);
 
-                if (invoiceNumberCheck) {
-                    return rc.setResponse(res, {
-                        success: false,
-                        msg: "Request already created with this invoice Number",
-                    });
-                }
+//                 if (invoiceNumberCheck) {
+//                     return rc.setResponse(res, {
+//                         success: false,
+//                         msg: "Request already created with this invoice Number",
+//                     });
+//                 }
 
-                const products = [];
+//                 const products = [];
 
-                for (const productData of req.body.products) {
-                    const productidcheck = await productTable.findOne({
-                        productname: productData.product,
-                    });
+//                 for (const productData of req.body.products) {
+//                     const productidcheck = await productTable.findOne({
+//                         productname: productData.product,
+//                     });
 
-                    if (!productidcheck) {
-                        return rc.setResponse(res, {
-                            success: false,
-                            msg: `Product '${productData.product}' not found.`,
-                        });
-                    }
+//                     if (!productidcheck) {
+//                         return rc.setResponse(res, {
+//                             success: false,
+//                             msg: `Product '${productData.product}' not found.`,
+//                         });
+//                     }
 
-                    // const gstID = await gstTable.findOne({ hsn_Code: productData.gstName });
+//                     // const gstID = await gstTable.findOne({ hsn_Code: productData.gstName });
 
-                    let existingStock = await warehouseStock
-                        .findOne({
-                            warehouse: warehouseidcheck._id,
-                            product: productidcheck._id,
-                        })
-                        .populate("warehouse product");
+//                     let existingStock = await warehouseStock
+//                         .findOne({
+//                             warehouse: warehouseidcheck._id,
+//                             product: productidcheck._id,
+//                         })
+//                         .populate("warehouse product");
 
-                    if (existingStock) {
-                        // Update existing stock quantity
-                        existingStock.productQuantity += productData.productQuantity;
-                        existingStock.sellingPrice = productData.sellingPrice;
-                        await existingStock.save();
-                    } else {
-                        // Create a new stock entry if it doesn't exist
-                        existingStock = new warehouseStock({
-                            warehouse: warehouseidcheck._id,
-                            product: productidcheck._id,
-                            productQuantity: productData.productQuantity,
-                            sellingPrice: productData.sellingPrice,
-                            admin: req.user._id,
-                        });
-                        await existingStock.save();
-                    }
+//                     if (existingStock) {
+//                         // Update existing stock quantity
+//                         existingStock.productQuantity += productData.productQuantity;
+//                         existingStock.sellingPrice = productData.sellingPrice;
+//                         await existingStock.save();
+//                     } else {
+//                         // Create a new stock entry if it doesn't exist
+//                         existingStock = new warehouseStock({
+//                             warehouse: warehouseidcheck._id,
+//                             product: productidcheck._id,
+//                             productQuantity: productData.productQuantity,
+//                             sellingPrice: productData.sellingPrice,
+//                             admin: req.user._id,
+//                         });
+//                         await existingStock.save();
+//                     }
 
-                    const product = {
-                        product: productidcheck._id,
-                        productQuantity: productData.productQuantity,
-                        sellingPrice: productData.sellingPrice,
-                        totalPrice: productData.totalPrice,
-                        // gst: gstID._id,
-                    };
+//                     const product = {
+//                         product: productidcheck._id,
+//                         productQuantity: productData.productQuantity,
+//                         sellingPrice: productData.sellingPrice,
+//                         totalPrice: productData.totalPrice,
+//                         // gst: gstID._id,
+//                     };
 
-                    products.push(product);
-                }
+//                     products.push(product);
+//                 }
 
-                let randomNumber = Math.floor(Math.random() * 100000000000000);
+//                 let randomNumber = Math.floor(Math.random() * 100000000000000);
 
-                const purchaseStockData = {
-                    warehouse: warehouseidcheck._id,
-                    supplier: supplierid._id,
-                    products: products,
-                    invoiceNumber: req.body.invoiceNumber,
-                    GRN_Number: randomNumber,
-                    date: req.body.date,
-                    admin: req.user._id,
-                };
+//                 const purchaseStockData = {
+//                     warehouse: warehouseidcheck._id,
+//                     supplier: supplierid._id,
+//                     products: products,
+//                     invoiceNumber: req.body.invoiceNumber,
+//                     GRN_Number: randomNumber,
+//                     date: req.body.date,
+//                     admin: req.user._id,
+//                 };
 
-                const newPurchaseStock = new purchaseStock(purchaseStockData);
-                await newPurchaseStock.save();
+//                 const newPurchaseStock = new purchaseStock(purchaseStockData);
+//                 await newPurchaseStock.save();
 
-                return rc.setResponse(res, {
-                    success: true,
-                    msg: "Data Inserted",
-                    data: newPurchaseStock,
-                });
-            } catch (error) {
-                console.error("Error:", error);
-                return rc.setResponse(res, {
-                    success: false,
-                    msg: "An error occurred while processing the request.",
-                });
-            }
-        } else {
-            return rc.setResponse(res, {
-                msg: "No permission to purchase",
-                error: { code: 403 },
-            });
-        }
-    })
-);
+//                 return rc.setResponse(res, {
+//                     success: true,
+//                     msg: "Data Inserted",
+//                     data: newPurchaseStock,
+//                 });
+//             } catch (error) {
+//                 console.error("Error:", error);
+//                 return rc.setResponse(res, {
+//                     success: false,
+//                     msg: "An error occurred while processing the request.",
+//                 });
+//             }
+//         } else {
+//             return rc.setResponse(res, {
+//                 msg: "No permission to purchase",
+//                 error: { code: 403 },
+//             });
+//         }
+//     })
+// );
 
 // ----------------------------*************************-----------------------------//
 // -----Filters added in this request ---------//
@@ -457,8 +451,7 @@ router.post(
 // get purchase stock list
 // router.get(
 //   "/purchasestocklistt",
-//   auth,
-//   asyncHandler(async (req, res) => {
+//   //   asyncHandler(async (req, res) => {
 //     const query = {
 //       role: req.user.role,
 //     };
@@ -551,264 +544,259 @@ router.post(
 //   })
 // );
 
-router.get(
-    "/purchaseStockList",
-    auth,
-    asyncHandler(async (req, res) => {
-        const query = {
-            role: req.user.role,
-        };
+// router.get(
+//     "/purchaseStockList",
+//     asyncHandler(async (req, res) => {
+//         const query = {
+//             role: req.user.role,
+//         };
 
-        const permissions = await TableModelPermission.getDataByQueryFilterDataOne(
-            query
-        );
-        // console.log(req.query);
-        let filters;
-        if (req.query.warehouse) {
-            const warehousedetail = await warehouseTable.findOne({
-                wareHouseName: req.query.warehouse,
-            });
-            // console.log("warehousedetail: ", warehousedetail);
-            filters = { warehouse: warehousedetail._id };
-            // filters.warehouse = warehousedetail._id;
-        }
-        if (req.query.productname) {
-            const productdetail = await productTable.findOne({
-                productname: req.query.productname,
-            });
-            // console.log("productdetail: ", productdetail);
-            filters = { product: productdetail._id };
-            // filters.product = productdetail._id;
-        }
-        if (req.query.supplier) {
-            const supplierdetail = await supplierTable.findOne({
-                supplierName: req.query.supplier,
-            });
-            // console.log("productdetail: ", supplierdetail);
-            filters = { supplier: supplierdetail._id };
-            // filters.supplier = supplierdetail._id;
-        }
-        if (req.query.invoiceNumber) {
-            filters = { invoiceNumber: req.query.invoiceNumber };
-            // filters.invoiceNumber = req.query.invoiceNumber;
-        }
-        if (req.query.grn_number) {
-            filters = { GRN_Number: req.query.grn_number };
-            // filters.GRN_Number = req.query.grn_number;
-        }
-        // console.log("filters: ", filters);
+//         const permissions = await TableModelPermission.getDataByQueryFilterDataOne(
+//             query
+//         );
+//         // console.log(req.query);
+//         let filters;
+//         if (req.query.warehouse) {
+//             const warehousedetail = await warehouseTable.findOne({
+//                 wareHouseName: req.query.warehouse,
+//             });
+//             // console.log("warehousedetail: ", warehousedetail);
+//             filters = { warehouse: warehousedetail._id };
+//             // filters.warehouse = warehousedetail._id;
+//         }
+//         if (req.query.productname) {
+//             const productdetail = await productTable.findOne({
+//                 productname: req.query.productname,
+//             });
+//             // console.log("productdetail: ", productdetail);
+//             filters = { product: productdetail._id };
+//             // filters.product = productdetail._id;
+//         }
+//         if (req.query.supplier) {
+//             const supplierdetail = await supplierTable.findOne({
+//                 supplierName: req.query.supplier,
+//             });
+//             // console.log("productdetail: ", supplierdetail);
+//             filters = { supplier: supplierdetail._id };
+//             // filters.supplier = supplierdetail._id;
+//         }
+//         if (req.query.invoiceNumber) {
+//             filters = { invoiceNumber: req.query.invoiceNumber };
+//             // filters.invoiceNumber = req.query.invoiceNumber;
+//         }
+//         if (req.query.grn_number) {
+//             filters = { GRN_Number: req.query.grn_number };
+//             // filters.GRN_Number = req.query.grn_number;
+//         }
+//         // console.log("filters: ", filters);
 
-        if (permissions.purchaseStockList) {
-            const allpurchase = await purchaseStock
-                .find(filters)
-                .populate("warehouse", "wareHouseName")
-                .populate("supplier", "supplierName")
-                // .populate("products.product", "productname productQuantity")
-                .exec();
+//         if (permissions.purchaseStockList) {
+//             const allpurchase = await purchaseStock
+//                 .find(filters)
+//                 .populate("warehouse", "wareHouseName")
+//                 .populate("supplier", "supplierName")
+//                 // .populate("products.product", "productname productQuantity")
+//                 .exec();
 
-            const formattedPurchaseData = allpurchase.map((purchase) => ({
-                _id: purchase._id,
-                warehouse: purchase.warehouse.wareHouseName,
-                supplier: purchase.supplier.supplierName,
-                // products: purchase.products.map((product) => ({
-                //   product: product.product.productname,
-                //   quantity: product.productQuantity,
-                //   sellingPrice: product.sellingPrice,
-                //   totalPrice: product.totalPrice,
-                // })),
-                invoiceNumber: purchase.invoiceNumber,
-                date: purchase.date,
-                GRN_Number: purchase.GRN_Number,
-                createdAt: purchase.createdAt,
-            }));
+//             const formattedPurchaseData = allpurchase.map((purchase) => ({
+//                 _id: purchase._id,
+//                 warehouse: purchase.warehouse.wareHouseName,
+//                 supplier: purchase.supplier.supplierName,
+//                 // products: purchase.products.map((product) => ({
+//                 //   product: product.product.productname,
+//                 //   quantity: product.productQuantity,
+//                 //   sellingPrice: product.sellingPrice,
+//                 //   totalPrice: product.totalPrice,
+//                 // })),
+//                 invoiceNumber: purchase.invoiceNumber,
+//                 date: purchase.date,
+//                 GRN_Number: purchase.GRN_Number,
+//                 createdAt: purchase.createdAt,
+//             }));
 
-            return rc.setResponse(res, {
-                success: true,
-                msg: "data fetched",
-                data: formattedPurchaseData,
-            });
-        } else {
-            return rc.setResponse(res, {
-                msg: "no permission to see purchase list",
-                error: { code: 403 },
-            });
-        }
-    })
-);
-router.get(
-    "/purchaseStockListById",
-    validator.query(getpurchasestockbyid),
-    auth,
-    asyncHandler(async (req, res) => {
-        const query = {
-            role: req.user.role,
-        };
+//             return rc.setResponse(res, {
+//                 success: true,
+//                 msg: "data fetched",
+//                 data: formattedPurchaseData,
+//             });
+//         } else {
+//             return rc.setResponse(res, {
+//                 msg: "no permission to see purchase list",
+//                 error: { code: 403 },
+//             });
+//         }
+//     })
+// );
+// router.get(
+//     "/purchaseStockListById",
+//     validator.query(getpurchasestockbyid),
+//     asyncHandler(async (req, res) => {
+//         const query = {
+//             role: req.user.role,
+//         };
 
-        const permissions = await TableModelPermission.getDataByQueryFilterDataOne(
-            query
-        );
-        // console.log(req.query);
-        let filters;
-        if (req.query.warehouse) {
-            const warehousedetail = await warehouseTable.findOne({
-                wareHouseName: req.query.warehouse,
-            });
-            // console.log("warehousedetail: ", warehousedetail);
-            filters = { warehouse: warehousedetail._id };
-            // filters.warehouse = warehousedetail._id;
-        }
-        if (req.query.productname) {
-            const productdetail = await productTable.findOne({
-                productname: req.query.productname,
-            });
-            // console.log("productdetail: ", productdetail);
-            filters = { product: productdetail._id };
-            // filters.product = productdetail._id;
-        }
-        if (req.query.supplier) {
-            const supplierdetail = await supplierTable.findOne({
-                supplierName: req.query.supplier,
-            });
-            // console.log("productdetail: ", supplierdetail);
-            filters = { supplier: supplierdetail._id };
-            // filters.supplier = supplierdetail._id;
-        }
-        if (req.query.invoiceNumber) {
-            filters = { invoiceNumber: req.query.invoiceNumber };
-            // filters.invoiceNumber = req.query.invoiceNumber;
-        }
-        if (req.query.grn_number) {
-            filters = { GRN_Number: req.query.grn_number };
-            // filters.GRN_Number = req.query.grn_number;
-        }
-        // console.log("filters: ", filters);
+//         const permissions = await TableModelPermission.getDataByQueryFilterDataOne(
+//             query
+//         );
+//         // console.log(req.query);
+//         let filters;
+//         if (req.query.warehouse) {
+//             const warehousedetail = await warehouseTable.findOne({
+//                 wareHouseName: req.query.warehouse,
+//             });
+//             // console.log("warehousedetail: ", warehousedetail);
+//             filters = { warehouse: warehousedetail._id };
+//             // filters.warehouse = warehousedetail._id;
+//         }
+//         if (req.query.productname) {
+//             const productdetail = await productTable.findOne({
+//                 productname: req.query.productname,
+//             });
+//             // console.log("productdetail: ", productdetail);
+//             filters = { product: productdetail._id };
+//             // filters.product = productdetail._id;
+//         }
+//         if (req.query.supplier) {
+//             const supplierdetail = await supplierTable.findOne({
+//                 supplierName: req.query.supplier,
+//             });
+//             // console.log("productdetail: ", supplierdetail);
+//             filters = { supplier: supplierdetail._id };
+//             // filters.supplier = supplierdetail._id;
+//         }
+//         if (req.query.invoiceNumber) {
+//             filters = { invoiceNumber: req.query.invoiceNumber };
+//             // filters.invoiceNumber = req.query.invoiceNumber;
+//         }
+//         if (req.query.grn_number) {
+//             filters = { GRN_Number: req.query.grn_number };
+//             // filters.GRN_Number = req.query.grn_number;
+//         }
+//         // console.log("filters: ", filters);
 
-        if (permissions.purchaseStockList) {
-            const allpurchase = await purchaseStock
-                .find({ _id: req.query.id })
-                .populate("warehouse", "wareHouseName")
-                .populate("supplier", "supplierName")
-                .populate("products.product", "productname productQuantity")
-                .exec();
+//         if (permissions.purchaseStockList) {
+//             const allpurchase = await purchaseStock
+//                 .find({ _id: req.query.id })
+//                 .populate("warehouse", "wareHouseName")
+//                 .populate("supplier", "supplierName")
+//                 .populate("products.product", "productname productQuantity")
+//                 .exec();
 
-            const formattedPurchaseData = allpurchase.map((purchase) => ({
-                _id: purchase._id,
-                warehouse: purchase.warehouse.wareHouseName,
-                supplier: purchase.supplier.supplierName,
-                products: purchase.products.map((product) => ({
-                    product: product.product.productname,
-                    quantity: product.productQuantity,
-                    sellingPrice: product.sellingPrice,
-                    totalPrice: product.totalPrice,
-                })),
-                invoiceNumber: purchase.invoiceNumber,
-                date: purchase.date,
-                GRN_Number: purchase.GRN_Number,
-                createdAt: purchase.createdAt,
-            }));
+//             const formattedPurchaseData = allpurchase.map((purchase) => ({
+//                 _id: purchase._id,
+//                 warehouse: purchase.warehouse.wareHouseName,
+//                 supplier: purchase.supplier.supplierName,
+//                 products: purchase.products.map((product) => ({
+//                     product: product.product.productname,
+//                     quantity: product.productQuantity,
+//                     sellingPrice: product.sellingPrice,
+//                     totalPrice: product.totalPrice,
+//                 })),
+//                 invoiceNumber: purchase.invoiceNumber,
+//                 date: purchase.date,
+//                 GRN_Number: purchase.GRN_Number,
+//                 createdAt: purchase.createdAt,
+//             }));
 
-            return rc.setResponse(res, {
-                success: true,
-                msg: "data fetched",
-                data: formattedPurchaseData,
-            });
-        } else {
-            return rc.setResponse(res, {
-                msg: "no permission to see purchase list",
-                error: { code: 403 },
-            });
-        }
-    })
-);
+//             return rc.setResponse(res, {
+//                 success: true,
+//                 msg: "data fetched",
+//                 data: formattedPurchaseData,
+//             });
+//         } else {
+//             return rc.setResponse(res, {
+//                 msg: "no permission to see purchase list",
+//                 error: { code: 403 },
+//             });
+//         }
+//     })
+// );
 
 // get purchase list pagination
-router.get(
-    "/purchasestocklist/Table/:page/:dataperpage",
-    auth,
-    asyncHandler(async (req, res, next) => {
-        const page = req.params.page;
-        const dataperpage = req.params.dataperpage;
-        const query = {
-            role: req.user.role,
-        };
-        var cdata = await TableModelPermission.getDataByQueryFilterDataOne(query);
-        if (cdata.productlist) {
-            const admin = req.user.id;
-            const data = await purchaseStock.getDataforTablePagination(
-                page,
-                dataperpage
-            );
-            if (data) {
-                return rc.setResponse(res, {
-                    success: true,
-                    msg: "Data Fetched",
-                    data: data,
-                });
-            } else {
-                return rc.setResponse(res, {
-                    msg: "Data not Found",
-                });
-            }
-        } else {
-            return rc.setResponse(res, { error: { code: 403 } });
-        }
-    })
-);
+// router.get(
+//     "/purchasestocklist/Table/:page/:dataperpage",
+//     asyncHandler(async (req, res, next) => {
+//         const page = req.params.page;
+//         const dataperpage = req.params.dataperpage;
+//         const query = {
+//             role: req.user.role,
+//         };
+//         var cdata = await TableModelPermission.getDataByQueryFilterDataOne(query);
+//         if (cdata.productlist) {
+//             const admin = req.user.id;
+//             const data = await purchaseStock.getDataforTablePagination(
+//                 page,
+//                 dataperpage
+//             );
+//             if (data) {
+//                 return rc.setResponse(res, {
+//                     success: true,
+//                     msg: "Data Fetched",
+//                     data: data,
+//                 });
+//             } else {
+//                 return rc.setResponse(res, {
+//                     msg: "Data not Found",
+//                 });
+//             }
+//         } else {
+//             return rc.setResponse(res, { error: { code: 403 } });
+//         }
+//     })
+// );
 
 // SampleCSV purchase stock
-router.get(
-    "/purchaseStock/SampleCSV",
-    auth,
-    asyncHandler(async (req, res) => {
-        const query = {
-            role: req.user.role,
-        };
-        // console.log(query);
-        let cdata = await TableModelPermission.getDataByQueryFilterDataOne(query);
-        // console.log(cdata);
-        if (cdata.updatebulkproduct) {
-            const j = {
-                warehouse: "",
-                product: "",
-                supplier: "",
-                productQuantity: "",
-                sellingPrice: "",
-                totalPrice: "",
-                invoiceNumber: "",
-                GRN_Number: "",
-                gst: "",
-                date: "",
-            };
-            const csvFields = [
-                "warehouse",
-                "product",
-                "supplier",
-                "productQuantity",
-                "sellingPrice",
-                "totalPrice",
-                "invoiceNumber",
-                "GRN_Number",
-                "gst",
-            ];
-            const csvParser = new CsvParser({ csvFields });
-            const csvdata = csvParser.parse(j);
-            res.setHeader("Content-Type", "text/csv");
-            res.setHeader(
-                "Content-Disposition",
-                "attachment; filename=SamplePurchaseStock.csv"
-            );
-            res.status(200).end(csvdata);
-        } else {
-            return rc.setResponse(res, { error: { code: 403 } });
-        }
-    })
-);
+// router.get(
+//     "/purchaseStock/SampleCSV",
+//     asyncHandler(async (req, res) => {
+//         const query = {
+//             role: req.user.role,
+//         };
+//         // console.log(query);
+//         let cdata = await TableModelPermission.getDataByQueryFilterDataOne(query);
+//         // console.log(cdata);
+//         if (cdata.updatebulkproduct) {
+//             const j = {
+//                 warehouse: "",
+//                 product: "",
+//                 supplier: "",
+//                 productQuantity: "",
+//                 sellingPrice: "",
+//                 totalPrice: "",
+//                 invoiceNumber: "",
+//                 GRN_Number: "",
+//                 gst: "",
+//                 date: "",
+//             };
+//             const csvFields = [
+//                 "warehouse",
+//                 "product",
+//                 "supplier",
+//                 "productQuantity",
+//                 "sellingPrice",
+//                 "totalPrice",
+//                 "invoiceNumber",
+//                 "GRN_Number",
+//                 "gst",
+//             ];
+//             const csvParser = new CsvParser({ csvFields });
+//             const csvdata = csvParser.parse(j);
+//             res.setHeader("Content-Type", "text/csv");
+//             res.setHeader(
+//                 "Content-Disposition",
+//                 "attachment; filename=SamplePurchaseStock.csv"
+//             );
+//             res.status(200).end(csvdata);
+//         } else {
+//             return rc.setResponse(res, { error: { code: 403 } });
+//         }
+//     })
+// );
 
 // bulk upload purchase stock
 // router.post(
 //   "/PurchaseStock/ImportCSV",
-//   auth,
-//   upload.single("file"),
+//   //   upload.single("file"),
 //   asyncHandler(async (req, res) => {
 //     const results = [];
 //     let rejectdata = [];
@@ -1060,162 +1048,160 @@ router.get(
 //   })
 // );
 
-router.post(
-    "/PurchaseStock/ImportCSV",
-    auth,
-    upload.single("file"),
-    asyncHandler(async (req, res) => {
-        const results = [];
-        const rejectdata = [];
-        const storeddata = [];
-        const query = { role: req.user.role };
+// router.post(
+//     "/PurchaseStock/ImportCSV",
+//     upload.single("file"),
+//     asyncHandler(async (req, res) => {
+//         const results = [];
+//         const rejectdata = [];
+//         const storeddata = [];
+//         const query = { role: req.user.role };
 
-        const permissions = await TableModelPermission.getDataByQueryFilterDataOne(query);
-        if (!permissions.bulkproductupload) {
-            return rc.setResponse(res, { error: { code: 403 } });
-        }
+//         const permissions = await TableModelPermission.getDataByQueryFilterDataOne(query);
+//         if (!permissions.bulkproductupload) {
+//             return rc.setResponse(res, { error: { code: 403 } });
+//         }
 
-        try {
-            const path = `public/${req.file.filename}`;
-            fs.createReadStream(path)
-                .pipe(csv({}))
-                .on("data", (data) => results.push(data))
-                .on("end", async () => {
-                    let purchaseStockData = null;
+//         try {
+//             const path = `public/${req.file.filename}`;
+//             fs.createReadStream(path)
+//                 .pipe(csv({}))
+//                 .on("data", (data) => results.push(data))
+//                 .on("end", async () => {
+//                     let purchaseStockData = null;
 
-                    for (let i = 0; i < results.length; i++) {
-                        const currentResult = results[i];
-                        let errorFound = false;
+//                     for (let i = 0; i < results.length; i++) {
+//                         const currentResult = results[i];
+//                         let errorFound = false;
 
-                        // Check for missing fields
-                        const requiredFields = ["warehouse", "product", "supplier", "productQuantity", "sellingPrice", "totalPrice", "invoiceNumber", "date"];
-                        for (const field of requiredFields) {
-                            if (!currentResult[field]) {
-                                currentResult.error = `${field} is missing`;
-                                errorFound = true;
-                                break;
-                            }
-                        }
-                        if (errorFound) {
-                            rejectdata.push(currentResult);
-                            // console.log("rejectdata: ", rejectdata);
-                        } else {
-                            try {
-                                const productdata = await productTable.findOne({ productname: currentResult.product });
-                                // console.log('productdata: ', productdata);
-                                const supplierdata = await supplierTable.findOne({ supplierName: currentResult.supplier });
-                                const warehousedata = await warehouseTable.findOne({ wareHouseName: currentResult.warehouse });
+//                         // Check for missing fields
+//                         const requiredFields = ["warehouse", "product", "supplier", "productQuantity", "sellingPrice", "totalPrice", "invoiceNumber", "date"];
+//                         for (const field of requiredFields) {
+//                             if (!currentResult[field]) {
+//                                 currentResult.error = `${field} is missing`;
+//                                 errorFound = true;
+//                                 break;
+//                             }
+//                         }
+//                         if (errorFound) {
+//                             rejectdata.push(currentResult);
+//                             // console.log("rejectdata: ", rejectdata);
+//                         } else {
+//                             try {
+//                                 const productdata = await productTable.findOne({ productname: currentResult.product });
+//                                 // console.log('productdata: ', productdata);
+//                                 const supplierdata = await supplierTable.findOne({ supplierName: currentResult.supplier });
+//                                 const warehousedata = await warehouseTable.findOne({ wareHouseName: currentResult.warehouse });
 
-                                const dateParts = currentResult.date.split("-");
-                                const day = parseInt(dateParts[0]);
-                                const month = parseInt(dateParts[1]) - 1;
-                                const year = parseInt(dateParts[2]);
-                                const purchaseDate = new Date(year, month, day);
+//                                 const dateParts = currentResult.date.split("-");
+//                                 const day = parseInt(dateParts[0]);
+//                                 const month = parseInt(dateParts[1]) - 1;
+//                                 const year = parseInt(dateParts[2]);
+//                                 const purchaseDate = new Date(year, month, day);
 
-                                if (!purchaseStockData) {
-                                    purchaseStockData = {
-                                        warehouse: warehousedata._id,
-                                        supplier: supplierdata._id,
-                                        products: [],
-                                        invoiceNumber: currentResult.invoiceNumber,
-                                        GRN_Number: currentResult.GRN_Number,
-                                        admin: req.user._id,
-                                        date: purchaseDate,
-                                    };
-                                }
+//                                 if (!purchaseStockData) {
+//                                     purchaseStockData = {
+//                                         warehouse: warehousedata._id,
+//                                         supplier: supplierdata._id,
+//                                         products: [],
+//                                         invoiceNumber: currentResult.invoiceNumber,
+//                                         GRN_Number: currentResult.GRN_Number,
+//                                         admin: req.user._id,
+//                                         date: purchaseDate,
+//                                     };
+//                                 }
 
-                                const productDetails = {
-                                    product: productdata._id,
-                                    productQuantity: currentResult.productQuantity,
-                                    sellingPrice: currentResult.sellingPrice,
-                                    totalPrice: currentResult.totalPrice,
-                                };
-                                purchaseStockData.products.push(productDetails);
+//                                 const productDetails = {
+//                                     product: productdata._id,
+//                                     productQuantity: currentResult.productQuantity,
+//                                     sellingPrice: currentResult.sellingPrice,
+//                                     totalPrice: currentResult.totalPrice,
+//                                 };
+//                                 purchaseStockData.products.push(productDetails);
 
-                                let existingStock = await warehouseStock.findOne({
-                                    warehouse: warehousedata._id,
-                                    product: productdata._id,
-                                });
+//                                 let existingStock = await warehouseStock.findOne({
+//                                     warehouse: warehousedata._id,
+//                                     product: productdata._id,
+//                                 });
 
-                                if (existingStock) {
-                                    existingStock.productQuantity += parseInt(currentResult.productQuantity);
-                                    await existingStock.save();
-                                    console.log("----------existing stock updated---------");
-                                } else {
-                                    const stock = {
-                                        warehouse: warehousedata._id,
-                                        product: productdata._id,
-                                        productQuantity: currentResult.productQuantity,
-                                        sellingPrice: currentResult.sellingPrice,
-                                    };
-                                    let newstock = new warehouseStock(stock);
-                                    newstock.admin = req.user._id;
-                                    await newstock.save();
-                                    console.log("---------new stock created ---------------");
-                                }
-
+//                                 if (existingStock) {
+//                                     existingStock.productQuantity += parseInt(currentResult.productQuantity);
+//                                     await existingStock.save();
+//                                     console.log("----------existing stock updated---------");
+//                                 } else {
+//                                     const stock = {
+//                                         warehouse: warehousedata._id,
+//                                         product: productdata._id,
+//                                         productQuantity: currentResult.productQuantity,
+//                                         sellingPrice: currentResult.sellingPrice,
+//                                     };
+//                                     let newstock = new warehouseStock(stock);
+//                                     newstock.admin = req.user._id;
+//                                     await newstock.save();
+//                                     console.log("---------new stock created ---------------");
+//                                 }
 
 
-                                storeddata.push(currentResult);
-                            } catch (e) {
-                                console.error(e);
-                                if (e.code === 11000) {
-                                    currentResult.error = "Duplicate Entry";
-                                } else {
-                                    currentResult.error = e.message || e.toString();
-                                }
-                                rejectdata.push(currentResult);
-                            }
-                        }
-                    }
 
-                    if (purchaseStockData) {
-                        try {
-                            const newRow = new purchaseStock(purchaseStockData);
-                            newRow.admin = req.user._id;
-                            await newRow.save();
-                            console.log("----------new purchase request created---------------");
-                        } catch (e) {
-                            console.error(e);
-                            rejectdata.push({ error: e.message || e.toString() });
-                        }
-                    }
+//                                 storeddata.push(currentResult);
+//                             } catch (e) {
+//                                 console.error(e);
+//                                 if (e.code === 11000) {
+//                                     currentResult.error = "Duplicate Entry";
+//                                 } else {
+//                                     currentResult.error = e.message || e.toString();
+//                                 }
+//                                 rejectdata.push(currentResult);
+//                             }
+//                         }
+//                     }
 
-                    let responseMsg = "Data Fetched";
-                    let responseData = {
-                        dataupload: "success",
-                        stored_data: storeddata.length,
-                    };
+//                     if (purchaseStockData) {
+//                         try {
+//                             const newRow = new purchaseStock(purchaseStockData);
+//                             newRow.admin = req.user._id;
+//                             await newRow.save();
+//                             console.log("----------new purchase request created---------------");
+//                         } catch (e) {
+//                             console.error(e);
+//                             rejectdata.push({ error: e.message || e.toString() });
+//                         }
+//                     }
 
-                    if (rejectdata.length > 0) {
-                        responseMsg = "Data Fetched (Partial Upload)";
-                        responseData = {
-                            dataupload: "partial upload",
-                            reject_data: rejectdata,
-                            stored_data: storeddata.length,
-                        };
-                    }
-                    return rc.setResponse(res, {
-                        success: true,
-                        msg: responseMsg,
-                        data: responseData,
-                    });
-                });
-        } catch (error) {
-            console.error(error);
-            return rc.setResponse(res, {
-                success: false,
-                msg: "An error occurred while processing the request.",
-            });
-        }
-    })
-);
+//                     let responseMsg = "Data Fetched";
+//                     let responseData = {
+//                         dataupload: "success",
+//                         stored_data: storeddata.length,
+//                     };
+
+//                     if (rejectdata.length > 0) {
+//                         responseMsg = "Data Fetched (Partial Upload)";
+//                         responseData = {
+//                             dataupload: "partial upload",
+//                             reject_data: rejectdata,
+//                             stored_data: storeddata.length,
+//                         };
+//                     }
+//                     return rc.setResponse(res, {
+//                         success: true,
+//                         msg: responseMsg,
+//                         data: responseData,
+//                     });
+//                 });
+//         } catch (error) {
+//             console.error(error);
+//             return rc.setResponse(res, {
+//                 success: false,
+//                 msg: "An error occurred while processing the request.",
+//             });
+//         }
+//     })
+// );
 
 // get purchase stock list by id
 // router.get(
 //   "/purchasestocklist/:id",
-//   auth,
-//   asyncHandler(async (req, res) => {
+//   //   asyncHandler(async (req, res) => {
 //     const query = {
 //       role: req.user.role,
 //     };
@@ -1271,43 +1257,42 @@ router.post(
 // );
 
 // get warehouse product by warehouseid
-router.get(
-    "/wareHouseProduct/Datalist",
-    auth,
-    asyncHandler(async (req, res) => {
-        const query = { role: req.user.role };
-        try {
-            const permissions =
-                await TableModelPermission.getDataByQueryFilterDataOne(query);
-            if (!permissions.listStock) {
-                return rc.setResponse(res, {
-                    success: false,
-                    msg: "Permission denied",
-                });
-            }
-            const data = await warehouseStock
-                .find({ warehouse: req.query.id })
-                .populate("product", "_id productname productid sellingprice")
-                .select("_id product sellingprice");
-            const productarray = data.map((item) => ({
-                _id: item.product._id,
-                productname: item.product.productname,
-                productid: item.product.productid,
-                sellingproce: item.product.sellingprice,
-            }));
-            return rc.setResponse(res, {
-                success: true,
-                msg: "Data fetched",
-                data: productarray,
-            });
-        } catch (error) {
-            console.error("Error:", error);
-            return rc.setResponse(res, {
-                success: false,
-                msg: "An error occurred while fetching data.",
-            });
-        }
-    })
-);
+// router.get(
+//     "/wareHouseProduct/Datalist",
+//     asyncHandler(async (req, res) => {
+//         const query = { role: req.user.role };
+//         try {
+//             const permissions =
+//                 await TableModelPermission.getDataByQueryFilterDataOne(query);
+//             if (!permissions.listStock) {
+//                 return rc.setResponse(res, {
+//                     success: false,
+//                     msg: "Permission denied",
+//                 });
+//             }
+//             const data = await warehouseStock
+//                 .find({ warehouse: req.query.id })
+//                 .populate("product", "_id productname productid sellingprice")
+//                 .select("_id product sellingprice");
+//             const productarray = data.map((item) => ({
+//                 _id: item.product._id,
+//                 productname: item.product.productname,
+//                 productid: item.product.productid,
+//                 sellingproce: item.product.sellingprice,
+//             }));
+//             return rc.setResponse(res, {
+//                 success: true,
+//                 msg: "Data fetched",
+//                 data: productarray,
+//             });
+//         } catch (error) {
+//             console.error("Error:", error);
+//             return rc.setResponse(res, {
+//                 success: false,
+//                 msg: "An error occurred while fetching data.",
+//             });
+//         }
+//     })
+// );
 
 module.exports = { addWareHouseStock, }

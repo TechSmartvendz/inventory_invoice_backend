@@ -12,7 +12,7 @@ const addCompany = async (req, res, next) => {
                 .send({ success: false, message: "Company Already registered" });
         }
         const newCompany = new CompanyModel({ admin: req.user._id, ...req.body });
-        const savedCompany = await newCompany.save()
+        const savedCompany = await newCompany.save();
         return res.status(200)
             .send({
                 success: true,

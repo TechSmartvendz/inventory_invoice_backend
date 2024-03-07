@@ -2,7 +2,6 @@
 // CREATE REFILL REQUEST
 const createRefillRequest = async (req, res, next) => {
     try {
-        if (req.user.role == "Refiller" || req.user.role == "SuperAdmin") {
             // console.log('req.body: ', req.body);
             // console.log("req.body",req.body.machineSlot);
             // console.log("returnitems:",req.body.returnItems);
@@ -20,8 +19,8 @@ const createRefillRequest = async (req, res, next) => {
             } else {
                 updatedSlots = req.body.returnItems;
             }
-            let randomNumber = Math.floor(Math.random() * 100000000000000);
-            let data = new refillRequest({
+            const randomNumber = Math.floor(Math.random() * 100000000000000);
+            const data = new refillRequest({
                 refillerId: refillerid,
                 machineId: machineId,
                 warehouse: warehouseid.warehouse,
@@ -34,15 +33,13 @@ const createRefillRequest = async (req, res, next) => {
             });
             // console.log("data", data);
             await data.save();
-            rc.setResponse(res, {
-                success: true,
-                message: "Refill request sent.",
-                data: data,
-            });
-        } else {
-            return rc.setResponse(res, { error: { code: 403 } });
-        }
-    } catch (error) {
+            res.status(200)
+                .send({
+                    success: true,
+                    data,
+                });
+        } 
+     catch (error) {
         console.log(error);
         return res.status(500).json({ error: "Failed to send refill request." });
     }
@@ -51,21 +48,6 @@ const createRefillRequest = async (req, res, next) => {
 // GET ALL REFILL REQUEST
 const getAllRefillRequest = async (req, res, next) => {
     try {
-        const checkPermission = {
-            role: req.user.role,
-        };
-        // permissions to check if this user has permission to view this data or not
-        const permissions = await TableModelPermission.getDataByQueryFilterDataOne(
-            checkPermission
-        );
-
-        if (!permissions.listRefillingRequest) {
-            return rc.setResponse(res, {
-                success: false,
-                msg: "No permission to find data",
-                data: {},
-            });
-        }
         const {
             status,
             refillerName,
@@ -79,15 +61,13 @@ const getAllRefillRequest = async (req, res, next) => {
         // query created for filtering
         const query2 = {};
 
-        if (req.user.role === "Admin") {
-            const machinesCreatedByAdmin = await machinedata
-                .find({ admin: req.user._id })
-                .select("_id");
-            const machineIdsCreatedByAdmin = machinesCreatedByAdmin.map(
-                (machine) => machine._id
-            );
-            filters.push({ machineId: { $in: machineIdsCreatedByAdmin } });
-        }
+        const machinesCreatedByAdmin = await machinedata
+            .find({ admin: req.user._id })
+            .select("_id");
+        const machineIdsCreatedByAdmin = machinesCreatedByAdmin.map(
+            (machine) => machine._id
+        );
+        filters.push({ machineId: { $in: machineIdsCreatedByAdmin } })
 
         // query2 created beacuse if refiller login it should only see his approved request or else if superadmin or admin then they should be able to see all approved request
         if (req.user.role == "Refiller") {
@@ -134,7 +114,7 @@ const getAllRefillRequest = async (req, res, next) => {
         }
         const mergedQuery = { $and: [query2, ...filters] };
         try {
-            const allRefillerRequest = await refillRequest
+            const allRefillerRequest = await RefillerRequestModel
                 .find(mergedQuery)
                 .select(
                     "id refillerId warehouse refillRequestNumber machineId status createdAt"
@@ -161,17 +141,18 @@ const getAllRefillRequest = async (req, res, next) => {
                 date: request.createdAt,
             }));
 
-            return rc.setResponse(res, {
-                success: true,
-                msg: "Data fetched",
-                data: data,
-            });
+            return res.status(200)
+                .send({
+                    success: false,
+                    data,
+                });
         } catch (error) {
             console.error("Error:", error);
-            return rc.setResponse(res, {
-                success: false,
-                msg: "An error occurred while fetching data.",
-            });
+            res.status(500)
+                .send({
+                    success: false,
+                    msg: "No permission to find data",
+                });
         }
     } catch (error) {
 
@@ -181,20 +162,7 @@ const getAllRefillRequest = async (req, res, next) => {
 // GET SINGLE REFILL REQUEST
 const getSingleRefillRequestByID = async (req, res, next) => {
     try {
-        const checkpermisson = {
-            role: req.user.role,
-        };
-        const permissions = await TableModelPermission.getDataByQueryFilterDataOne(
-            checkpermisson
-        );
-        if (!permissions.listRefillingRequest) {
-            return rc.setResponse(res, {
-                success: false,
-                msg: "No permisson to find data",
-                data: {},
-            });
-        }
-        const refillerRequestById = await refillRequest
+        const refillerRequestById = await RefillerRequestModel
             .findOne({ _id: req.params.id })
             .populate("refillerId", ["_id", "first_name", "user_id"])
             .populate("machineId", ["machineid", "machinename", "location"])
@@ -208,11 +176,9 @@ const getSingleRefillRequestByID = async (req, res, next) => {
                 "productname",
                 "sellingprice",
             ]);
-        const data = refillerRequestById;
-        return rc.setResponse(res, {
+        return res.status(200).json({
             success: true,
-            msg: "Data fetched",
-            data: data,
+            refillerRequestById,
         });
     } catch (error) {
 

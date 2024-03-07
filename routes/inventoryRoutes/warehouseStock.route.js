@@ -1,6 +1,9 @@
 const { Router } = require("express");
 const { addWareHouseStock } = require("../../controllers/inventoryControllers/warehouseStock");
 
+const asyncHandler = (func) => {
+return func;
+}
 const warehouseStockRouter = Router()
 // this routes for warehouse stock
 
@@ -10,7 +13,6 @@ warehouseStockRouter.post("/addstock", addWareHouseStock);
 // get all warehouseStock
 warehouseStockRouter.get(
     "/getall",
-    auth,
     asyncHandler(async (req, res, next) => {
         const query = {
             role: req.user.role,
@@ -53,7 +55,7 @@ warehouseStockRouter.get(
 // get warehouseStocks by id
 warehouseStockRouter.get(
     "/getWarehouseStock/:_id",
-    auth,
+
     asyncHandler(async (req, res, next) => {
         const query = {
             role: req.user.role,
@@ -96,7 +98,7 @@ warehouseStockRouter.get(
 // Update warehouseStock
 warehouseStockRouter.put(
     "/updateWareHouseStock/:_id",
-    auth,
+
     asyncHandler(async (req, res) => {
         const query = {
             role: req.user.role,
@@ -123,7 +125,6 @@ warehouseStockRouter.put(
 // deleteWarehouse Stock
 warehouseStockRouter.put(
     "/deleteWareHouseStock/:id",
-    auth,
     asyncHandler(async (req, res) => {
         const query = {
             role: req.user.role,

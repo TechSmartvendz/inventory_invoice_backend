@@ -1,25 +1,24 @@
-const mongoose = require("mongoose");
-const jwt = require("jsonwebtoken");
-const e = require("express");
+const { Schema, model } = require("mongoose")
 
-const ProductSchema = mongoose.Schema({
+const ProductSchema = Schema({
   productId: {
     type: String,
-    require: true,
+    required: true,
     unique: true,
   },
   productName: {
     type: String,
-    require: true,
+    required: true,
     unique: true,
     trim: true
   },
   description: {
     type: String,
+    default: "N/A",
   },
   materialType: {
     type: String,
-    require: true,
+    required: true,
   },
   sellingPrice: {
     type: Number,
@@ -35,28 +34,28 @@ const ProductSchema = mongoose.Schema({
   },
   remark: {
     type: String,
+    default: "N/A",
   },
   HSNcode: {
     type: String,
-    require: true,
+    default: "N/A",
   },
   createdBy: {
-    type: String,
-    require: true,
-    default: this.admin,
+    type: Schema.Types.ObjectId,
+    ref: "inventoryusers"
   },
   isDeleted: {
     type: Boolean,
     require: true,
     default: false,
   },
-  admin: {
-    type: String,
-    required: true,
-  },
+  // admin: {
+  //   type: String,
+  //   required: true,
+  // },
 }, { timestamps: true });
 
-const ProductModel = mongoose.model("product", ProductSchema);
+const ProductModel = model("products", ProductSchema);
 
 module.exports = { ProductModel }
 

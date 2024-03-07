@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const RefillrequestSchema = new Schema(
+const RefillerRequestSchema = new Schema(
   {
     refillerId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -121,6 +121,6 @@ const RefillrequestSchema = new Schema(
     },
   }, { timestamps: true });
 
-const RefillrequestModel = mongoose.model("refillrequests", RefillrequestSchema);
+const RefillerRequestModel = mongoose.model("refillerrequests", RefillerRequestSchema);
 
-module.exports = { RefillrequestModel }
+module.exports = { RefillerRequestModel }

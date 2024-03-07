@@ -1,46 +1,64 @@
-const mongoose = require("mongoose");
+const {Schema,model} = require("mongoose");
 
-const CompanySchema = mongoose.Schema({
-  companyId: {
-    type: String,
-    require: true,
-    unique: true,
-  },
+const CompanySchema = Schema({
+  // companyId: {
+  //   type: String,
+  //   require: true,
+  //   unique: true,
+  // },
   companyName: {
     type: String,
     require: true,
   },
   address: {
-    type: String,
-    require: true,
-  },
-  area: {
-    type: String,
-    require: true,
+    addressLineOne: {
+      type: String,
+      default: "N/A"
+    },
+    area: {
+      type: String,
+      default: "N/A"
+    },
+    city: {
+      type: String,
+      default: "N/A"
+    },
+    state: {
+      type: String,
+      default: "N/A"
+    },
+    country: {
+      type: String,
+      default: "N/A"
+    },
+    pincode: {
+      type: Number,
+      default: "N/A"
+    },
   },
   phone: {
     type: String,
+    default: "N/A"
   },
   email: {
     type: String,
+    default: "N/A"
   },
   createdBy: {
-    type: String,
-    require: true,
-    default: this.admin,
+    type: Schema.Types.ObjectId,
+    ref: "inventoryusers"
   },
   isDeleted: {
     type: Boolean,
-    require: true,
     default: false,
   },
-  admin: {
-    type: String,
-    required: true,
-  },
+  // admin: {
+  //   type: String,
+  //   required: true,
+  // },
 }, { timestapms: true });
 
-const CompanyModel = mongoose.model("companies", CompanySchema);
+const CompanyModel = model("companies", CompanySchema);
 
 module.exports = { CompanyModel };
 
