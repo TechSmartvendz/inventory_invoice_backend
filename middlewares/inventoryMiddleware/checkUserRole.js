@@ -19,10 +19,9 @@ const verifyToken = (req, res, next) => {
 };
 
 const verifySuperAdmin = (req, res, next) => {
-    console.log('verifySuperAdmin: ', verifySuperAdmin);
     verifyToken(req, res, () => {
         // console.log('req: ', req.user);
-        if (req.user.isAdmin) {
+        if (req.user.role === "superAdmin") {
             next()
         }
         else {
@@ -33,9 +32,8 @@ const verifySuperAdmin = (req, res, next) => {
 
 const verifyAdmin = (req, res, next) => {
     verifyToken(req, res, () => {
-        console.log('req: ', req.user);
+        // console.log('req.user: ', req.user);
         if (req.user.role === "admin" || req.user.role === "superAdmin") {
-            // console.log('req.user.isAdmin: ', req.user.isAdmin);
             next()
         }
         else {
@@ -45,10 +43,9 @@ const verifyAdmin = (req, res, next) => {
 }
 
 const verifyRefiller = (req, res, next) => {
-    console.log('verifyRefiller: ', verifyRefiller);
     verifyToken(req, res, () => {
         // console.log('req: ', req.user);
-        if (req.user.isAdmin) {
+        if (req.user.role === "refiller" || req.user.role === "admin" || req.user.role === "superAdmin") {
             next()
         }
         else {

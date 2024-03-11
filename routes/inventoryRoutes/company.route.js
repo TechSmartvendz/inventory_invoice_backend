@@ -1,15 +1,16 @@
 const express = require('express');
-const { addCompany, getAllCompanys, getSingleCompany,
+const { addCompany, getAllCompanies, getSingleCompany,
     updateCompany, deleteCompany,
-} = require("../../controllers/inventoryControllers/company")
+} = require("../../controllers/inventoryControllers/company");
+const { verifyAdmin } = require('../../middlewares/inventoryMiddleware/checkUserRole');
 
 const companyRouter = express.Router();
 
 // CREATE / ADD COMPANY
-companyRouter.post('/create', addCompany);
+companyRouter.post('/create',verifyAdmin, addCompany);
 
 // GET ALL COMPANY'S 
-companyRouter.get('/getall', getAllCompanys);
+companyRouter.get('/getall', getAllCompanies);
 
 // GET SINGLE COMPANY 
 companyRouter.get('/single/:id', getSingleCompany);

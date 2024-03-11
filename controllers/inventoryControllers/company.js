@@ -2,16 +2,17 @@ const { CompanyModel } = require("../../models/inventoryModels/company.model");
 
 // add warehouse
 const addCompany = async (req, res, next) => {
-    const { } = req.body;
+    const { id, role } = req.user;
+    const payload = req.body;
     try {
-        const checkCompany = await CompanyModel.find({
-            CompanyName: req.body.CompanyName
+        const checkCompany = await CompanyModel.findOne({
+            CompanyName: payload.CompanyName
         });
         if (checkCompany) {
             return res.status(400)
                 .send({ success: false, message: "Company Already registered" });
         }
-        const newCompany = new CompanyModel({ admin: req.user._id, ...req.body });
+        const newCompany = new CompanyModel({ createdBy: id, ...payload });
         const savedCompany = await newCompany.save();
         return res.status(200)
             .send({
@@ -24,16 +25,17 @@ const addCompany = async (req, res, next) => {
         return next(error)
     }
 }
-// list all Companys
-const getAllCompanys = async (req, res, next) => {
+// list all Companies
+const getAllCompanies = async (req, res, next) => {
     try {
-        const Companys = await CompanyModel
+        const Companies = await CompanyModel
             .find({ isDeleted: false })
+            .populate("createdBy")
         // .select("_id CompanyName city contactPerson admin");
         return res.status(200)
             .send({
                 success: true,
-                Companys,
+                Companies,
             });
     } catch (error) {
         return next(error)
@@ -91,6 +93,6 @@ const deleteCompany = async (req, res, next) => {
 }
 
 module.exports = {
-    addCompany, getAllCompanys, getSingleCompany,
+    addCompany, getAllCompanies, getSingleCompany,
     updateCompany, deleteCompany,
 }

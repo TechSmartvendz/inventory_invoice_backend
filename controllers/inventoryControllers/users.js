@@ -19,7 +19,8 @@ const getSingleUser = async (req, res, next) => {
 //GET ALL
 const getAllUser = async (req, res, next) => {
     try {
-        const users = await UserModel.find();
+        const users = await UserModel.find()
+            .populate("warehouse");
         return res.status(200)
             .json({
                 success: true,

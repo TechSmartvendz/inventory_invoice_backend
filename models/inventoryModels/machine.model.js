@@ -55,7 +55,7 @@ const MachineSchema = Schema({
   warehouse: {
     type: Schema.Types.ObjectId,
     ref: "warehouses",
-    default: "N/A"
+    default: null
   },
   refiller: {
     type: Schema.Types.ObjectId,

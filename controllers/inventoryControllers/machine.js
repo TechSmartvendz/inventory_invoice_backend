@@ -1,48 +1,43 @@
 const { MachineModel } = require("../../models/inventoryModels/machine.model");
+const { UserModel } = require("../../models/inventoryModels/users.model");
+const { createError } = require("../../utils/createError");
 
 // CREATE MACHINE
 const createMachine = async (req, res, next) => {
+  const { id, role } = req.user;
+  const payload = req.body;
   try {
-    var cdata = await TableModelPermission.getDataByQueryFilterDataOne(query);
-    if (cdata.addnewmachine) {
-      // console.log(req.body);
-      const warehousedata = await warehouse.findOne({
-        wareHouseName: req.body.warehouse,
-      });
-      newRow = new TableModel(req.body);
-      newRow.admin = req.user._id;
-      newRow.warehouse = warehousedata._id;
-      // newRow.country=cdata.id
-      if (!newRow) {
-        return res.status(200)
-          .send({
-            success: true,
-            machines,
-          });
-      }
-      const data = await TableModel.addRow(newRow);
-      if (data) {
-        return res.status(200)
-          .send({
-            success: true,
-            machines,
-          });
-      }
-    } else {
-      return (res, { error: { code: 403 } });
+    const checkMachine = await MachineModel.findOne({
+      MachineName: payload.MachineName
+    });
+    if (checkMachine) {
+      return res.status(400)
+        .send({ success: false, message: "Machine Already registered" });
     }
-  } catch (error) {
-
+    const newMachine = new MachineModel({ createdBy: id, ...payload });
+    const savedMachine = await newMachine.save();
+    return res.status(200)
+      .send({
+        success: true,
+        message: "Machine Added Successfully",
+        savedMachine,
+      });
+  }
+  catch (error) {
+    return next(error)
   }
 }
 // GET ALL MACHINE
 const getAllMachines = async (req, res, next) => {
   try {
-    const { role, _id } = req.user;
+    const { id, role, } = req.user;
+    // const userDetails = await UserModel.findById(id).populate("warehouse")
+    const userDetails = await UserModel.findById(id)
+    // console.log('userDetails: ', userDetails);
     const filter =
-      role === "admin" ? { admin: _id }
-        : role === "refiller" ? { refiller: _id }
-          : {}
+      role !== "superAdmin" ?
+        { warehouse: userDetails.warehouse }
+        : {}
 
     const machines = await MachineModel.find({ ...filter, delete_status: false });
     return res.status(200)
@@ -56,38 +51,15 @@ const getAllMachines = async (req, res, next) => {
 }
 // GET SINGLE MACHINE
 const getSingleMachine = async (req, res, next) => {
+  const { id } = req.params;
   try {
-    const query = {
-      role: req.user.role,
-    };
-    var cdata = await TableModelPermission.getDataByQueryFilterDataOne(query);
-    if (cdata.addnewmachine) {
-      // const role = req.params.id;
-      // const query = {
-      //   _id: role,
-      // };
-      // const data = await TableModel.getDataByQueryFilterDataOne(query);
-      const machineid = req.params.id;
-      const data = await TableModel.getDataByQueryFilterDataOneAggregate(
-        machineid
-      );
-      // console.log("data",data)
-      if (data) {
-        return res.status(200)
-          .send({
-            success: true,
-            machines,
-          });
-      } else {
-        return res.status(200)
-          .send({
-            success: true,
-            machines,
-          });
-      }
-    } else {
-      return (res, { error: { code: 403 } });
-    }
+    const machine = await MachineModel.findById(id)
+    return res.status(200)
+      .send({
+        success: true,
+        machine,
+      });
+
   } catch (error) {
 
   }

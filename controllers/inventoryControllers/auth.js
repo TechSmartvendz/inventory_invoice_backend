@@ -4,7 +4,9 @@ const { UserModel } = require('../../models/inventoryModels/users.model');
 const { createError } = require('../../utils/createError');
 
 const register = async (req, res, next) => {
-    const { userName, password, ...otherDetails } = req.body;
+    const { id, role } = req.user; // this is getting from jwt token
+    const { userName, password, createdBy, ...otherDetails } = req.body;
+    // console.log('req.body: ', req.body);
     try {
         const checkUserIsAlreadyExist = await UserModel.findOne({ userName });
         if (checkUserIsAlreadyExist) {
@@ -17,6 +19,7 @@ const register = async (req, res, next) => {
             else {
                 const newUser = new UserModel({
                     userName,
+                    createdBy: id,
                     password: hash, // Store hash password in DB.
                     ...otherDetails,
                 });
@@ -26,8 +29,11 @@ const register = async (req, res, next) => {
 
         });
     }
-    catch (err) {
-        next(err)
+    catch (error) {
+        // return next(err)
+        console.error('Error:', error.message);
+        // Handle the error gracefully, maybe send an error response
+        res.status(500).json({ error: 'Internal server error' });
     }
 }
 

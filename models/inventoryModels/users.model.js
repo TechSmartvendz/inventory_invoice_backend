@@ -7,6 +7,10 @@ const UserSchema = new Schema({
     trim: true,
     unique: true,
   },
+  password: {
+    type: String,
+    required: true,
+  },
   firstName: {
     type: String,
     required: true,
@@ -42,23 +46,23 @@ const UserSchema = new Schema({
       type: String,
       default: "N/A"
     },
-    country: {
-      type: String,
-      default: "N/A"
-    },
     pincode: {
       type: Number,
       default: "N/A"
     },
+    country: {
+      type: String,
+      default: "N/A"
+    },
   },
-  profile_pic: {
+  profilePhoto: {
     type: String,
     // default: 'defaultProfileImg.jpg'
     default: "N/A"
   },
   createdBy: {
     type: Schema.Types.ObjectId,
-    ref: "inventoryusers"
+    ref: "inventoryusers",
   },
   isDeleted: {
     type: Boolean,
@@ -69,10 +73,6 @@ const UserSchema = new Schema({
     require: true,
     enum: ["superAdmin", "admin", "refiller"],
   },
-  password: {
-    type: String,
-    required: true,
-  },
   // admin: {
   //   type: String,
   //   required: true,
@@ -80,7 +80,7 @@ const UserSchema = new Schema({
   warehouse: {
     type: Schema.Types.ObjectId,
     ref: "warehouses",
-    default:"N/A"
+    default: null
   },
 }, { timestamps: true });
 
